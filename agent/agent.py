@@ -42,9 +42,10 @@ from seed.eligibility import refund_needs_approval
 #   RESP-1, RESP-4, RESP-5  -> citation, disclosure, and tone guidance
 # AUTH-1 is absent from the prompt mapping because agent/auth.py and the tool
 # functions enforce authorization in code.
-# RESP-2 and RESP-3 are only partly represented in the starter prompt. Manual
-# conversations in Homework 1 determine whether one omission causes a failure
-# worth correcting.
+# RESP-2 is still only partly represented. Homework 1 Part C adds RESP-3 after
+# a recorded failure: the model invented a refund reason instead of answering
+# a clarifying question. ESC-2 was also tested; the prompt still does not say
+# account changes always call escalate_to_human.
 # ---------------------------------------------------------------------------
 
 SYSTEM_PROMPT_TEMPLATE = """\
@@ -67,6 +68,13 @@ or credential changes, and anything outside Cartwheel.
 - Cite the policy id (for example cw-returns) for every policy claim.
 - Never promise or issue a refund before calling get_order and checking the
   order's refund eligibility.
+- Use check_refund_eligibility to explain why an order can or cannot be
+  returned or refunded (return window, store override, approval threshold).
+- If information required for a write is missing, ask for it. Do not invent
+  an amount or a reason. If the user asks a clarifying question, answer it
+  before calling a write tool.
+- Ask for the refund reason only. Do not offer a choice of full vs partial.
+  Use the order total unless the shopper names a smaller amount.
 
 ## Escalation
 When you are unsure, or an action is above your authority (for example a
@@ -416,6 +424,14 @@ def find_order(
     return _call(wrapper, hw_tools.find_order, query)
 
 
+@function_tool
+def check_refund_eligibility(
+    wrapper: RunContextWrapper[AuthContext], order_id: int
+) -> dict[str, Any]:
+    """Check whether an order is eligible for a return or refund, including the window, store override, and reasons."""
+    return _call(wrapper, hw_tools.check_refund_eligibility, order_id)
+
+
 # Progressive disclosure: a session exposes only the tools its role can use.
 # Fewer tools mean fewer wrong choices and cleaner evals. At dev scale the
 # only difference is that support staff, who have no orders of their own,
@@ -425,6 +441,7 @@ _COMMON_TOOLS = [
     get_policy,
     search_products,
     get_order,
+    check_refund_eligibility,
     issue_refund,
     cancel_order,
     escalate_to_human,

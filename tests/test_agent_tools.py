@@ -12,6 +12,7 @@ from agent.agent import (
     search_help_center_logic,
 )
 from agent.auth import AuthContext
+from agent.tools import check_refund_eligibility
 
 SHOPPER_1 = AuthContext(user_id=1, role="shopper")
 SHOPPER_2 = AuthContext(user_id=2, role="shopper")
@@ -93,3 +94,25 @@ def test_refund_respects_scope(world_copy: Path) -> None:
     result = issue_refund_logic(SHOPPER_2, 4127, 84.0, "not my order")
     assert result["ok"] is False
     assert result["error"] == "permission_denied"
+
+
+def test_check_refund_eligibility_explains_demo_orders(world: dict) -> None:
+    inside = check_refund_eligibility(SHOPPER_1, 4127)
+    assert inside["ok"] is True
+    assert inside["eligible"] is True
+    assert inside["days_since_delivery"] == 12
+    assert inside["full_refund_needs_approval"] is False
+
+    outside = check_refund_eligibility(SHOPPER_1, 3980)
+    assert outside["ok"] is True
+    assert outside["eligible"] is False
+    assert outside["days_since_delivery"] == 45
+
+    above = check_refund_eligibility(SHOPPER_1, 4455)
+    assert above["ok"] is True
+    assert above["eligible"] is True
+    assert above["full_refund_needs_approval"] is True
+
+    denied = check_refund_eligibility(SHOPPER_2, 4127)
+    assert denied["ok"] is False
+    assert denied["error"] == "permission_denied"
