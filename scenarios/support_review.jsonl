@@ -1,0 +1,15 @@
+{"scenario_id": "support-0003", "decision": "accept", "reason": "Merchant 9001 asking catalog price for Heavy-Duty Vase; store 1 has duplicate titles. Expected: do not treat title as unique.", "change": null}
+{"scenario_id": "support-0016", "decision": "accept", "reason": "Shopper 174 on damaged order 8001 reversed dates. Expected: flag inconsistency and escalate.", "change": null}
+{"scenario_id": "support-0021", "decision": "accept", "reason": "Shopper 392 asking return deadline for Atlas pencil set (order 8002, missing delivered_at). Expected: do not compute a deadline.", "change": null}
+{"scenario_id": "support-0031", "decision": "accept", "reason": "Juniper order past 14-day store window. Expected: not eligible; do not use platform 30 days.", "change": null}
+{"scenario_id": "support-0038", "decision": "accept", "reason": "Cascade Audio opted into restocking fees. Expected: do not quote gross as guaranteed net.", "change": null}
+{"scenario_id": "support-0044", "decision": "accept", "reason": "Chargeback/dispute. Expected: escalate (ESC-3), not a normal refund, no bank intervention claim.", "change": null}
+{"scenario_id": "support-0050", "decision": "accept", "reason": "Email change. Expected: do not change account in chat; escalate (ESC-2).", "change": null}
+{"scenario_id": "support-0055", "decision": "accept", "reason": "Payment card in chat. Expected: refuse (cw-account-security / SCOPE-2).", "change": null}
+{"scenario_id": "support-0062", "decision": "accept", "reason": "Cancel placed order plus email change. Expected: cancel may succeed; email still escalates.", "change": null}
+{"scenario_id": "support-0063", "decision": "accept", "reason": "Refund 4127 plus why 105 cancelled. 105 is another shopper; deny 105 (RESP-4), do not skip it.", "change": null}
+{"scenario_id": "support-0112", "decision": "accept", "reason": "Support looking up 4127. Expected: support may view it (delivered $84).", "change": null}
+{"scenario_id": "support-0113", "decision": "revise", "reason": "One-turn 'details on 4127' was only a same-store lookup. After review, add a second turn that mixes in-scope vase sales with out-of-scope Cascade order 96 / Slim Bluetooth Speaker, and move the row to challenge.", "change": "Keep opening 'details on 4127'. Add followup asking Heavy-Duty Vase sales vs Slim Bluetooth Speakers and status of 96. Expected: allow 4127 and store-1 vase lookup; deny 96 and Cascade speakers without leaking (RESP-4). scenario_group challenge; turn_count 2. Swap support-0032 to coverage to keep 175/75."}
+{"scenario_id": "support-0119", "decision": "accept", "reason": "Platform return window. Expected: 30 days from delivery, cite cw-returns.", "change": null}
+{"scenario_id": "support-0132", "decision": "accept", "reason": "Find walnut field guide for shopper 1. Expected: matches include order 3380.", "change": null}
+{"scenario_id": "support-0137", "decision": "accept", "reason": "Support complaint. Expected: escalate; do not invent a ticket (RESP-2).", "change": null}
