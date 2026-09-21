@@ -1,0 +1,406 @@
+{
+  "modes": [
+    {
+      "name": "refund_ineligible_without_why",
+      "definition": "A status or details reply reports that a refund is not eligible, or omits the eligibility flag, without stating the return-window or store-override reason.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "c4f16d0c7cc458192c1f11f1ff9f0f76",
+        "0736a652f227bfb1a1111949dd80558f",
+        "b512d4d5dab6d4865b23e9e3cc6d1c3b",
+        "4a8b70a393a60164844f6c11d9524a9e",
+        "a4391d1b52b5345b686384e93e090146",
+        "90995f80e1679e8fd8554c7e1e255de1",
+        "26b7eb5ca7fb76d9038af9de396d02d2",
+        "bcbc499ffd54f0f004ebb31a5069a4ff",
+        "8f517179d8b6430db0bab709c83bed19",
+        "eb3cde1852d9a56cecd7f60c4fc787bf",
+        "1144aa4365eb9bbb77cc9102bc6a2591"
+      ],
+      "example_scenario_ids": [
+        "support-0199",
+        "support-0222",
+        "support-0187",
+        "support-0250",
+        "support-0249",
+        "support-0248",
+        "support-0247",
+        "support-0207",
+        "support-0195",
+        "support-0192",
+        "support-0105"
+      ],
+      "example_quotes": [
+        "The order is currently showing as not refund-eligible. Would you like me to check the specific refund eligibility details",
+        "currently marked as not eligible for a refund",
+        "currently not marked as refund-eligible"
+      ],
+      "created_from": [
+        "c4f16d0c7cc458192c1f11f1ff9f0f76",
+        "0736a652f227bfb1a1111949dd80558f",
+        "b512d4d5dab6d4865b23e9e3cc6d1c3b",
+        "4a8b70a393a60164844f6c11d9524a9e",
+        "a4391d1b52b5345b686384e93e090146",
+        "90995f80e1679e8fd8554c7e1e255de1",
+        "26b7eb5ca7fb76d9038af9de396d02d2",
+        "bcbc499ffd54f0f004ebb31a5069a4ff",
+        "8f517179d8b6430db0bab709c83bed19",
+        "eb3cde1852d9a56cecd7f60c4fc787bf",
+        "1144aa4365eb9bbb77cc9102bc6a2591"
+      ],
+      "first_failure_count": 11,
+      "requirement_source": "agent prompt: use check_refund_eligibility to explain why; SPEC RESP-1",
+      "close_negative_scenario_ids": [
+        "support-0071",
+        "support-0242",
+        "support-0180"
+      ],
+      "neighbor_mode": "reask_refund_reasons",
+      "boundary": "Present when a status/details reply reports ineligible (or omits the flag) without the window or store-override reason. Absent when the reply states the window/override, or when eligibility is Yes. Not a refund write-path reask.",
+      "evaluator_type": "judge",
+      "any_instance_count": 38,
+      "close_negative_trace_ids": [
+        "56520816f92850caf140135d0e2d7003",
+        "6129a50a5cdcef55670c2435fcc759f8",
+        "ca0851230c893ec3fc4dbbe3315e84b6"
+      ]
+    },
+    {
+      "name": "reask_refund_reasons",
+      "definition": "The user already asked to refund an order and often already gave a reason, but the agent still asks for a reason and/or amount, or starts that write-path Q&A on an eligibility question such as 'can we refund'.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "3334d6d259219650c6580ba178951edc",
+        "273e99e129ccbe1a1e3234d7d076226b",
+        "27b030aa5869387f354487d1b6e9b2ec",
+        "3ca40d508d48757c99c107984767c38a"
+      ],
+      "example_scenario_ids": [
+        "support-0153",
+        "support-0156",
+        "support-0152",
+        "support-0185"
+      ],
+      "example_quotes": [
+        "What's the reason for the return? (e.g., \"no longer wanted,\" \"not as expected,\" etc.)",
+        "Reason: Is \"no longer wanted\" a fair description, or would you like to state it differently?",
+        "How much would you like refunded? (up to $20.50)"
+      ],
+      "created_from": [
+        "3334d6d259219650c6580ba178951edc",
+        "273e99e129ccbe1a1e3234d7d076226b",
+        "27b030aa5869387f354487d1b6e9b2ec",
+        "3ca40d508d48757c99c107984767c38a"
+      ],
+      "first_failure_count": 4,
+      "requirement_source": "scenario: do not invent a reason if one was given; write-tool prompt still requires amount before issue_refund",
+      "close_negative_scenario_ids": [
+        "support-0180",
+        "support-0184",
+        "support-0043"
+      ],
+      "neighbor_mode": "disputes_with_refund",
+      "boundary": "Present when the user already asked to refund and often already gave a reason, but the agent still asks reason/amount, or starts that Q&A on an eligibility question. Absent when no reason was given yet (write-tool prompt requires it) or the user only asked how much they would get back. A chargeback is disputes_with_refund, not this mode.",
+      "evaluator_type": "judge",
+      "any_instance_count": 10,
+      "close_negative_trace_ids": [
+        "ca0851230c893ec3fc4dbbe3315e84b6",
+        "5b97d531263224e731fd11021886f235",
+        "d7d71cc26a9e3faddefcf212009638eb"
+      ]
+    },
+    {
+      "name": "disputes_with_refund",
+      "definition": "A stated card-issuer dispute or chargeback is handled as a normal auto-refund instead of being routed as a dispute.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "06a7a7bf339f6579f9c4abd750a31158",
+        "02f45763b7bcb14cd18d090e6e7b4caa",
+        "26f550c7b10a5895d92ed37ca94bd8db"
+      ],
+      "example_scenario_ids": [
+        "support-0047",
+        "support-0048",
+        "support-0049"
+      ],
+      "example_quotes": [
+        "I can process it right now",
+        "Once you confirm both, I'll process it right away",
+        "I can process it right now"
+      ],
+      "created_from": [
+        "06a7a7bf339f6579f9c4abd750a31158",
+        "02f45763b7bcb14cd18d090e6e7b4caa",
+        "26f550c7b10a5895d92ed37ca94bd8db"
+      ],
+      "first_failure_count": 3,
+      "requirement_source": "cw-disputes; ESC-3",
+      "close_negative_scenario_ids": [
+        "support-0125",
+        "support-0044",
+        "support-0180"
+      ],
+      "neighbor_mode": "reask_refund_reasons",
+      "boundary": "Present when a stated card-issuer dispute/chargeback is handled as a normal auto-refund. Absent when the agent cites cw-disputes and routes to a human, or when the user asked for an ordinary refund with no dispute.",
+      "evaluator_type": "judge",
+      "any_instance_count": 2,
+      "close_negative_trace_ids": [
+        "e6b1d55173c03908b1a879cd629f02b0",
+        "035181a617816126ec905e6b77b160ac",
+        "ca0851230c893ec3fc4dbbe3315e84b6"
+      ]
+    },
+    {
+      "name": "omit_product_title",
+      "definition": "An order or cancel reply includes product_id, quantity, or price but no item name, so the user cannot tell which SKU it is.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "9460d99e406c8506e7d7989ba3bc3dd6",
+        "4e6eee529106d00d3696f727997a8f74",
+        "23b969462f51a4524393fe88ad0a05a8",
+        "329499acbef34e2564f5e24583334ad7",
+        "5a0adeb86d5f6e74f5429fd20a423ff3"
+      ],
+      "example_scenario_ids": [
+        "support-0132",
+        "support-0091",
+        "support-0076",
+        "support-0077",
+        "support-0150"
+      ],
+      "example_quotes": [
+        "Order #3380 \u2014 2 items, $23.00 total",
+        "Quantity: 2 items",
+        "Total: $179.50 (2 items)"
+      ],
+      "created_from": [
+        "9460d99e406c8506e7d7989ba3bc3dd6",
+        "4e6eee529106d00d3696f727997a8f74",
+        "23b969462f51a4524393fe88ad0a05a8",
+        "329499acbef34e2564f5e24583334ad7",
+        "5a0adeb86d5f6e74f5429fd20a423ff3"
+      ],
+      "first_failure_count": 5,
+      "requirement_source": "open-coding notes on get_order/find_order missing titles",
+      "close_negative_scenario_ids": [
+        "support-0004",
+        "support-0173",
+        "support-0112"
+      ],
+      "neighbor_mode": "untitled_match_as_identity",
+      "boundary": "Present when an order/cancel reply includes product_id, quantity, or price but no item name. Absent when the reply names the SKU, or when get_order omission was left as the tool shape (0112). Untitled catalog matches are untitled_match_as_identity, not this mode.",
+      "evaluator_type": "code",
+      "any_instance_count": 4,
+      "close_negative_trace_ids": [
+        "73640065198365dced4bf56bf0d9af33",
+        "f3914817cafe7a4a768d425f1552a9c7",
+        "6ce1bbba635a4c91ea0aacc33f228260"
+      ]
+    },
+    {
+      "name": "escalate_offered_not_done",
+      "definition": "Escalation is required or the agent offers a ticket, but escalate_to_human is not called this turn.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "7a017c744b20204a09c0b6bfcaeceef0",
+        "826c1d5ce72431dc8adfe78f66df7c35",
+        "3337984d1f88aa0041fd76d8864d5f3b",
+        "e418b3522f844001e96b17d506147380"
+      ],
+      "example_scenario_ids": [
+        "support-0137",
+        "support-0019",
+        "support-0016",
+        "support-0018"
+      ],
+      "example_quotes": [
+        "Would you like me to do that? If there's also an order issue or question that still needs resolving, I'm happy to help with that right now too.",
+        "I'm happy to dig deeper or escalate it for you",
+        "I'm happy to help look into it further or escalate it to a human agent"
+      ],
+      "created_from": [
+        "7a017c744b20204a09c0b6bfcaeceef0",
+        "826c1d5ce72431dc8adfe78f66df7c35",
+        "3337984d1f88aa0041fd76d8864d5f3b",
+        "e418b3522f844001e96b17d506147380"
+      ],
+      "first_failure_count": 4,
+      "requirement_source": "ESC-3; scenario escalate_inconsistent_chronology",
+      "close_negative_scenario_ids": [
+        "support-0054",
+        "support-0053",
+        "support-0065"
+      ],
+      "neighbor_mode": "unnecessary_escalate_offer",
+      "boundary": "Present when escalation is required or the agent offers a ticket, but escalate_to_human is not called this turn. Absent when a ticket is not required (account-change refusal, shipped-cancel refusal) even if an offer appears. Opposite of unnecessary_escalate_offer, where policy already resolved the request.",
+      "evaluator_type": "code",
+      "any_instance_count": 3,
+      "close_negative_trace_ids": [
+        "d6089887ab692c3999a78337592e461b",
+        "f018a7d584bdde16a1e869e979fbe478",
+        "f288b98be8dda07c4ce9d87475b2c27a"
+      ]
+    },
+    {
+      "name": "unnecessary_escalate_offer",
+      "definition": "Policy or authorization already resolved the request, but the agent still offers a human or special-circumstances exception.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "24fa173f8da02a88fa0e6368edabf253",
+        "aef6a89a4e65ca2a5386561d8a2a663c",
+        "ecc04c8659af232e4312b56c4c459266",
+        "16c0adca46f17fba2b2569e277e831ea"
+      ],
+      "example_scenario_ids": [
+        "support-0056",
+        "support-0070",
+        "support-0069",
+        "support-0068"
+      ],
+      "example_quotes": [
+        "If you need information about an order from another store, you'd need to reach out to that store's merchant or I can escalate it to a human support agent on your behalf.",
+        "If you believe there are special circumstances, I can escalate this to a human agent for review.",
+        "If you believe there are special circumstances, I can escalate this to a human agent for review."
+      ],
+      "created_from": [
+        "24fa173f8da02a88fa0e6368edabf253",
+        "aef6a89a4e65ca2a5386561d8a2a663c",
+        "ecc04c8659af232e4312b56c4c459266",
+        "16c0adca46f17fba2b2569e277e831ea"
+      ],
+      "first_failure_count": 4,
+      "requirement_source": "cw-returns has no special-circumstances exception; RESP-4 extra offer",
+      "close_negative_scenario_ids": [
+        "support-0137",
+        "support-0054",
+        "support-0044"
+      ],
+      "neighbor_mode": "escalate_offered_not_done",
+      "boundary": "Present when policy or authorization already resolved the request, but the agent still offers a human or special-circumstances exception. Absent when a human is actually required (ESC-3 chronology, chargeback, inconsistent data the agent cannot fix).",
+      "evaluator_type": "judge",
+      "any_instance_count": 4,
+      "close_negative_trace_ids": [
+        "7a017c744b20204a09c0b6bfcaeceef0",
+        "d6089887ab692c3999a78337592e461b",
+        "035181a617816126ec905e6b77b160ac"
+      ]
+    },
+    {
+      "name": "untitled_match_as_identity",
+      "definition": "An empty-title or fuzzy tool hit is treated as the product the user named.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "681df836beacca84c843af83f1dc856f",
+        "f77a24115544a03bc040cdcc13e85a3d",
+        "009ce603675a025e843aac97722e03bc",
+        "798948fed2defc7cad8337237e6fb4ab"
+      ],
+      "example_scenario_ids": [
+        "support-0113",
+        "support-0008",
+        "support-0007",
+        "support-0009"
+      ],
+      "example_quotes": [
+        "Slim Bluetooth Speakers are outselling Heavy-Duty Vases",
+        "the title field for your Portable Tray listing is currently empty",
+        "the search returned one match from the catalog (product ID 3, priced at $9.75)"
+      ],
+      "created_from": [
+        "681df836beacca84c843af83f1dc856f",
+        "f77a24115544a03bc040cdcc13e85a3d",
+        "009ce603675a025e843aac97722e03bc",
+        "798948fed2defc7cad8337237e6fb4ab"
+      ],
+      "first_failure_count": 4,
+      "requirement_source": "search_products/find_order match description or fuzzy id, not a confirmed title",
+      "close_negative_scenario_ids": [
+        "support-0004",
+        "support-0184",
+        "support-0126"
+      ],
+      "neighbor_mode": "invented_claim_not_in_tool",
+      "boundary": "Present when an empty-title or fuzzy tool hit is treated as the product the user named. Absent when search returns titled rows and the agent asks which (0004), or when the agent reports the title is empty without asserting identity (0006, rejected suggestion). Invented stock/payment facts are invented_claim_not_in_tool.",
+      "evaluator_type": "judge",
+      "any_instance_count": 3,
+      "close_negative_trace_ids": [
+        "73640065198365dced4bf56bf0d9af33",
+        "5b97d531263224e731fd11021886f235",
+        "b08406557445bb7a6e9f57fd9e2898ee"
+      ]
+    },
+    {
+      "name": "invented_claim_not_in_tool",
+      "definition": "The reply asserts a fact no tool returned, such as stock status, payment timing, or a refund credit amount.",
+      "status": "confirmed",
+      "named_by": "human",
+      "example_trace_ids": [
+        "04f9a35fb2299ba326e79534f74aa092",
+        "97032d989e41428f29b493bce2f1e5c2",
+        "0fc929aaaf89aa06c564400c466e08a0"
+      ],
+      "example_scenario_ids": [
+        "support-0073",
+        "support-0147",
+        "support-0066"
+      ],
+      "example_quotes": [
+        "It's possible it may be out of stock, no longer available, or listed under a slightly different name.",
+        "The shopper should see the status update reflected shortly. If they were already charged, the payment will be reversed according to the store's standard processing time.",
+        "Look for a credit from Cartwheel or Wooden Whale Workshop matching $155.75"
+      ],
+      "created_from": [
+        "04f9a35fb2299ba326e79534f74aa092",
+        "97032d989e41428f29b493bce2f1e5c2",
+        "0fc929aaaf89aa06c564400c466e08a0"
+      ],
+      "first_failure_count": 3,
+      "requirement_source": "SPEC RESP-2; tools return structured fields only",
+      "close_negative_scenario_ids": [
+        "support-0141",
+        "support-0125",
+        "support-0136"
+      ],
+      "neighbor_mode": "untitled_match_as_identity",
+      "boundary": "Present when the reply asserts a fact no tool returned (stock, payment timing, credit amount, sign-flipped price). Absent when the agent only restates tool fields or cites a retrieved policy. Cancel-without-confirm is parked, not this mode, unless a payment reversal is invented.",
+      "evaluator_type": "judge",
+      "any_instance_count": 3,
+      "close_negative_trace_ids": [
+        "7cdee7a1cc2375136069db93157bd545",
+        "e6b1d55173c03908b1a879cd629f02b0",
+        "2abbe409d55ebfc80d187d4f426a9fec"
+      ]
+    }
+  ],
+  "reconciliation": {
+    "traces_open_coded": 100,
+    "review_set": 100,
+    "label_cells": 800,
+    "any_instance_total": 67,
+    "holdout_new_consequential_modes": 0,
+    "part_c_workshop": "skipped_optional"
+  },
+  "parked": {
+    "leftover_refund_unexplained": "0074/0075; dropped to stay at 8 modes",
+    "order_product_store_mismatch": "0028/0029; dropped to stay at 8 modes",
+    "escalate_without_ack": "0020/0017; dropped to stay at 8 modes",
+    "unconfirmed_cancel": "0148/0139/0140; spec gap"
+  },
+  "note": "Frozen 8-mode student taxonomy per skill guideline. Human dropped the three extra modes. Demo analysis/state/patterns.json untouched.",
+  "taxonomy_revision": "Stayed at 8 modes. Parked leftover_refund_unexplained, order_product_store_mismatch, escalate_without_ack, and unconfirmed_cancel (spec gap: confirm-then-cancel is not in SPEC).",
+  "agentdebug_compare": "AgentDebug (arXiv:2509.25370) uses generic agent failures (planning, tool-use, hallucination, instruction-following). Cartwheel modes are product-specific. invented_claim_not_in_tool maps to hallucination / tool-result misreport; untitled_match_as_identity to overconfident tool-use; reask_refund_reasons and disputes_with_refund to instruction-following. Parked unconfirmed_cancel is the nearest AgentDebug unconfirmed-write analogue; it was not added, to stay at 8 and because SPEC does not require a confirm turn on an imperative cancel.",
+  "rejected_suggestion": {
+    "id": "sugg-66-support-0006",
+    "scenario_id": "support-0006",
+    "mode": "untitled_match_as_identity",
+    "decision": "rejected",
+    "reason": "Close negative for untitled_match_as_identity: the reply reports that product 3's title field is blank and does not treat the untitled row as a confirmed catalog name. Boundary: disclose empty title \u2260 use the fuzzy hit as the product the user named (0007/0008)."
+  }
+}

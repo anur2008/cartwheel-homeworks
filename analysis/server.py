@@ -27,7 +27,8 @@ API (kept compatible with the error-discovery skill so the same UI works):
 
 Run it:
 
-    python analysis/server.py                       # serve on :8020
+    python analysis/server.py                       # demo fixtures on :8020
+    python analysis/server.py --student             # HW4 student notes/taxonomy
     python analysis/server.py --port 8021
     python analysis/server.py --replay state/demo_annotations.json
 
@@ -44,6 +45,7 @@ import argparse
 import json
 import threading
 import time
+from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -54,14 +56,26 @@ UI_DIR = HERE / "ui"
 
 # API path -> the state file that backs it. GET reads the file, POST overwrites
 # it. Keeping this a plain table makes the whole contract inspectable and keeps
-# the handler tiny.
-API_FILES: dict[str, Path] = {
+# the handler tiny. ``--student`` remaps these onto the HW4 student files so
+# the demo fixtures used by tests stay untouched.
+DEMO_API_FILES: dict[str, Path] = {
     "/api/samples": STATE_DIR / "samples.json",
     "/api/annotations": STATE_DIR / "annotations.json",
     "/api/graph": STATE_DIR / "graph.json",
     "/api/patterns": STATE_DIR / "patterns.json",
     "/api/suggestions": STATE_DIR / "suggestions.json",
+    "/api/labels": STATE_DIR / "labels.json",
 }
+STUDENT_API_FILES: dict[str, Path] = {
+    "/api/samples": STATE_DIR / "student_samples.json",
+    "/api/annotations": STATE_DIR / "student_annotations.json",
+    "/api/graph": STATE_DIR / "student_graph.json",
+    "/api/patterns": STATE_DIR / "student_patterns.json",
+    "/api/suggestions": STATE_DIR / "student_suggestions.json",
+    "/api/labels": STATE_DIR / "student_labels.json",
+}
+API_FILES: dict[str, Path] = dict(DEMO_API_FILES)
+STUDENT_MODE = False
 
 # Default empty document per endpoint, so a fresh checkout serves valid JSON
 # before the agent has written anything. samples/annotations/suggestions are
@@ -72,6 +86,7 @@ API_DEFAULTS: dict[str, Any] = {
     "/api/graph": {"nodes": [], "clusters": []},
     "/api/patterns": {},
     "/api/suggestions": [],
+    "/api/labels": {"rows": []},
 }
 
 
@@ -127,6 +142,8 @@ class ReviewHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
+        if content_type.startswith("text/html"):
+            self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(body)
 
@@ -162,7 +179,7 @@ class ReviewHandler(BaseHTTPRequestHandler):
 
         if path in API_FILES:
             data = _read_json(API_FILES[path], API_DEFAULTS[path])
-            self._send_json(data)
+            self._send_json(_for_client(path, data))
             return
 
         self._send_json({"error": f"unknown path: {path}"}, status=404)
@@ -183,7 +200,7 @@ class ReviewHandler(BaseHTTPRequestHandler):
             except Exception as exc:  # pragma: no cover - network-only path
                 # Preserve a resumable local copy, but tell the client that
                 # the canonical write did not complete.
-                _write_json(API_FILES[path], data)
+                _write_json(API_FILES[path], _for_disk(path, data))
                 self._send_json(
                     {
                         "error": f"Langfuse score write failed: {exc}",
@@ -192,11 +209,55 @@ class ReviewHandler(BaseHTTPRequestHandler):
                     status=502,
                 )
                 return
-        _write_json(API_FILES[path], data)
+        if path == "/api/labels":
+            try:
+                synced = _sync_structured_labels(data)
+            except Exception as exc:  # pragma: no cover - network-only path
+                _write_json(API_FILES[path], _for_disk(path, data))
+                self._send_json(
+                    {
+                        "error": f"Langfuse score write failed: {exc}",
+                        "cached_locally": True,
+                    },
+                    status=502,
+                )
+                return
+        _write_json(API_FILES[path], _for_disk(path, data))
         result = {"ok": True, "count": _count(data)}
         if synced:
             result["langfuse_scores_written"] = synced
         self._send_json(result)
+
+
+def _for_client(path: str, data: Any) -> Any:
+    """Unwrap student wrapper objects so the UI always sees lists."""
+    if path == "/api/annotations" and isinstance(data, dict):
+        return data.get("annotations", [])
+    if path == "/api/suggestions" and isinstance(data, dict):
+        return data.get("suggestions", [])
+    if path == "/api/samples" and isinstance(data, dict):
+        return data.get("samples", [])
+    return data
+
+
+def _for_disk(path: str, data: Any) -> Any:
+    """Keep student files wrapped so open-coding notes are not flattened."""
+    if not STUDENT_MODE:
+        return data
+    if path == "/api/annotations":
+        existing = _read_json(API_FILES[path], {"annotations": []})
+        if not isinstance(existing, dict):
+            existing = {}
+        existing["annotations"] = _annotation_list(data)
+        return existing
+    if path == "/api/suggestions":
+        existing = _read_json(API_FILES[path], {"suggestions": []})
+        if not isinstance(existing, dict):
+            existing = {}
+        items = data.get("suggestions", data) if isinstance(data, dict) else data
+        existing["suggestions"] = items if isinstance(items, list) else []
+        return existing
+    return data
 
 
 def _count(data: Any) -> int:
@@ -248,6 +309,67 @@ def _sync_annotation_scores(data: Any) -> int:
             mode=str(mode),
             label=int(label),
             comment=ann.get("note"),
+            client=client,
+        )
+        written += 1
+    return written
+
+
+def _sync_structured_labels(data: Any) -> int:
+    """Persist present/absent cells to ``state/labels/<mode>.jsonl`` and Langfuse.
+
+    Homework 4 requires one file per final mode and Langfuse scores for accepted
+    binary judgments. Free-text notes stay in annotations; this path is the
+    structured grid. Only modes present in the payload are rewritten, so the
+    demo ``unsupported_policy_claim.jsonl`` is left alone.
+    """
+    rows = data.get("rows") if isinstance(data, dict) else None
+    if not isinstance(rows, list):
+        return 0
+    labels_dir = STATE_DIR / "labels"
+    labels_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.now(timezone.utc).isoformat()
+    by_mode: dict[str, list[dict[str, Any]]] = {}
+    cells: list[tuple[str, str, int, str | None]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        tid = row.get("trace_id")
+        sid = row.get("scenario_id")
+        if not tid:
+            continue
+        for mode, val in (row.get("modes") or {}).items():
+            if val not in (0, 1, "0", "1"):
+                continue
+            rec = {
+                "trace_id": tid,
+                "scenario_id": sid,
+                "mode": str(mode),
+                "label": int(val),
+                "source": "human",
+                "ts": ts,
+            }
+            by_mode.setdefault(str(mode), []).append(rec)
+            cells.append((str(tid), str(mode), int(val), row.get("note")))
+    for mode, recs in by_mode.items():
+        (labels_dir / f"{mode}.jsonl").write_text(
+            "".join(json.dumps(r) + "\n" for r in recs)
+        )
+
+    try:
+        from analysis.helpers import langfuse_io
+    except Exception:
+        return 0
+    if not langfuse_io.is_configured():
+        return 0
+    client = langfuse_io._client()
+    written = 0
+    for trace_id, mode, label, comment in cells:
+        langfuse_io.write_label_score(
+            trace_id=trace_id,
+            mode=mode,
+            label=label,
+            comment=comment,
             client=client,
         )
         written += 1
@@ -333,7 +455,19 @@ def main() -> None:
         default=4.0,
         help="seconds between replayed annotations (default 4)",
     )
+    parser.add_argument(
+        "--student",
+        action="store_true",
+        help="serve HW4 student files (student_annotations.json, "
+        "student_patterns.json, student_suggestions.json) instead of "
+        "the demo fixtures",
+    )
     args = parser.parse_args()
+
+    global API_FILES, STUDENT_MODE
+    if args.student:
+        STUDENT_MODE = True
+        API_FILES = dict(STUDENT_API_FILES)
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -352,6 +486,8 @@ def main() -> None:
     url = f"http://{args.host}:{args.port}/"
     print(f"review interface on {url}")
     print(f"serving state from {STATE_DIR}")
+    if STUDENT_MODE:
+        print("student mode: student_annotations / student_patterns / student_suggestions")
     print("open the URL, read a trace, select the failing text, type a note.")
     try:
         server.serve_forever()

@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<!--
+  Homework 4 review app (analysis/review_app/). Not the course reference.
+
+  Langfuse records one trace per user turn. This UI groups turns that share
+  cartwheel.session_id, or scenario_id when sessionId is missing from the
+  HW3 export, and plays them in createdAt order.
+
+  Views: Trace (conversation), Map, Progress (taxonomy + incomplete labels
+  + suggestion queue), Labels (present/absent per reviewed trace × mode).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cartwheel error analysis · HW4</title>
+<style>
+  :root {
+    /* role hues (Gestalt similarity: one hue per role, full saturation) */
+    --role-user: #2563eb;
+    --role-assistant: #059669;
+    --role-tool-call: #b45309;
+    --role-tool-result: #7c3aed;
+    --role-system: #6b7280;
+    --role-retrieval: #0891b2;
+
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --hl: #fde68a;             /* human annotation highlight */
+    --hl-pending: #fef08a;     /* mid-annotation, before save */
+    --sugg: #ddd6fe;           /* agent suggestion highlight tint */
+    --sugg-border: #7c3aed;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  code, pre, .mono { font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace; }
+
+  /* ---- top bar ---- */
+  header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 10px 18px; background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 50;
+  }
+  header h1 { font-size: 15px; margin: 0; font-weight: 700; }
+  header h1 .dim { color: var(--muted); font-weight: 400; }
+  .views { display: flex; gap: 4px; }
+  .views button {
+    border: 1px solid var(--line); background: var(--bg);
+    padding: 6px 14px; border-radius: 6px; cursor: pointer; font: inherit;
+  }
+  .views button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .spacer { flex: 1; }
+  .counts { color: var(--muted); font-size: 13px; }
+  .nav { display: flex; gap: 4px; align-items: center; }
+  .nav button {
+    border: 1px solid var(--line); background: var(--bg);
+    width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font: inherit;
+  }
+  .nav .pos { color: var(--muted); font-size: 13px; min-width: 74px; text-align: center; }
+  #scenario-jump {
+    font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace;
+    max-width: 220px; padding: 4px 6px; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--bg); color: var(--ink);
+  }
+
+  /* ---- toast banner for new samples/suggestions ---- */
+  #toast {
+    position: fixed; right: 18px; bottom: 18px; z-index: 100;
+    background: var(--ink); color: #fff; padding: 10px 16px;
+    border-radius: 8px; font-size: 13px; opacity: 0; pointer-events: none;
+    transition: opacity .2s; max-width: 320px;
+  }
+  #toast.show { opacity: 1; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ---- trace view: two columns, body + margin ---- */
+  #trace-view { padding: 20px 18px 120px; }
+  .trace-header {
+    display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline;
+    max-width: 980px; margin: 0 auto 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .trace-header .tid { font-weight: 700; }
+  .trace-header .meta { color: var(--muted); font-size: 13px; }
+  .trace-header .chip {
+    font-size: 11px; padding: 2px 7px; border-radius: 10px;
+    background: #eef2ff; color: #3730a3;
+  }
+  .trace-header .chip.warn { background: #fee2e2; color: #991b1b; }
+  .trace-header .chip.ok { background: #d1fae5; color: #065f46; }
+  .result-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 6px; }
+  .result-chips span {
+    font-size: 11px; font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    background: #f3f4f6; padding: 2px 7px; border-radius: 6px;
+  }
+  .result-chips .neg { background: #fee2e2; color: #991b1b; }
+  .result-chips .empty { background: #fef3c7; color: #92400e; }
+  .filter-bar { display: flex; gap: 6px; margin: 0 auto 12px; max-width: 980px; }
+  .filter-bar button {
+    border: 1px solid var(--line); background: var(--bg); font: inherit;
+    font-size: 12px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  }
+  .filter-bar button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #labels-view { padding: 20px 18px 80px; margin: 0; overflow-x: auto; }
+  #labels-view table {
+    border-collapse: separate; border-spacing: 0;
+    font-size: 12.5px; background: var(--panel);
+  }
+  #labels-view th, #labels-view td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+  #labels-view th { position: sticky; top: 52px; background: #f9fafb; font-size: 11px; z-index: 2; }
+  #labels-view th:first-child, #labels-view td.sid {
+    position: sticky; left: 0; z-index: 3; background: var(--panel);
+    width: 132px; min-width: 132px; max-width: 132px;
+    box-shadow: 4px 0 8px rgba(0,0,0,.04);
+  }
+  #labels-view th:first-child { top: 52px; z-index: 4; background: #f9fafb; }
+  #labels-view th:not(:first-child), #labels-view td:not(.sid) { min-width: 108px; }
+  #labels-view .sid {
+    cursor: pointer; color: var(--role-user); font-weight: 700;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  #labels-view .sid-note {
+    color: var(--muted); font-size: 11px; margin-top: 2px; font-weight: 400;
+    font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  #labels-view select { font: inherit; font-size: 12px; width: 100%; min-width: 92px; }
+  #trace-labels {
+    max-width: 980px; margin: 0 auto 14px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+  }
+  #trace-labels .tl-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  #trace-labels .tl-note { font-size: 13px; margin: 0 0 8px; }
+  #trace-labels .tl-grid { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  #trace-labels .tl-row { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  #trace-labels .tl-name { font-family: ui-monospace, monospace; font-size: 11px; }
+  .trace-body-wrap {
+    display: flex; gap: 24px; max-width: 980px; margin: 0 auto;
+    align-items: flex-start; position: relative;
+  }
+  .trace-body { flex: 1; max-width: 720px; }
+  .margin-col { width: 240px; position: relative; flex-shrink: 0; }
+  .turn-banner {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted); margin: 18px 0 8px; cursor: pointer;
+    padding: 6px 8px; border-radius: 6px; border: 1px solid transparent;
+  }
+  .turn-banner:first-child { margin-top: 0; }
+  .turn-banner.active {
+    color: var(--ink); background: var(--panel); border-color: var(--line);
+  }
+
+  /* a step groups a tool call + its result (Gestalt common region) */
+  .step {
+    border: 1px solid var(--line); border-radius: 8px;
+    margin-bottom: 20px; overflow: hidden; background: var(--panel);
+  }
+  .step.tight { margin-bottom: 8px; }         /* tight within a logical group */
+
+  .msg { padding: 10px 14px; border-left: 4px solid var(--line); }
+  .msg + .msg { border-top: 1px solid var(--line); }
+  .msg .role {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .04em; margin-bottom: 5px;
+  }
+  .msg[data-role="user"]        { border-left-color: var(--role-user); }
+  .msg[data-role="user"] .role        { color: var(--role-user); }
+  .msg[data-role="assistant"]   { border-left-color: var(--role-assistant); }
+  .msg[data-role="assistant"] .role   { color: var(--role-assistant); }
+  .msg[data-role="tool_call"]   { border-left-color: var(--role-tool-call); }
+  .msg[data-role="tool_call"] .role   { color: var(--role-tool-call); }
+  .msg[data-role="tool_result"] { border-left-color: var(--role-tool-result); }
+  .msg[data-role="tool_result"] .role { color: var(--role-tool-result); }
+  .msg[data-role="system"]      { border-left-color: var(--role-system); opacity: .55; }
+  .msg[data-role="system"] .role      { color: var(--role-system); }
+  .msg[data-role="retrieval"]   { border-left-color: var(--role-retrieval); }
+  .msg[data-role="retrieval"] .role   { color: var(--role-retrieval); }
+  .msg.boiler { opacity: .5; }                /* identical-across-traces content */
+
+  .msg .text { white-space: pre-wrap; word-wrap: break-word; }
+  .fn { font-weight: 700; }
+  details.args { margin-top: 6px; }
+  details.args summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  pre.json {
+    background: #f3f4f6; border-radius: 6px; padding: 8px 10px; margin: 6px 0 0;
+    font-size: 12.5px; overflow-x: auto; white-space: pre;
+  }
+  .result-summary { color: var(--muted); font-size: 13px; }
+
+  /* ---- highlights + margin notes ---- */
+  .hl { background: var(--hl); border-radius: 2px; cursor: pointer; }
+  .hl.pending-highlight { background: var(--hl-pending); }
+  .hl.sugg { background: var(--sugg); border-bottom: 2px dashed var(--sugg-border); }
+  .hl.outline { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+  .mnote {
+    position: absolute; left: 0; width: 100%;
+    background: var(--panel); border-left: 3px solid var(--hl);
+    border-radius: 4px; padding: 7px 9px; font-size: 12.5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .mnote.sugg { border-left-color: var(--sugg-border); background: #faf5ff; }
+  .mnote.outline { box-shadow: 0 0 0 2px var(--ink); }
+  .mnote .quote { color: var(--muted); font-style: italic; margin-bottom: 3px; }
+  .mnote .body { white-space: pre-wrap; }
+  .mnote .tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    color: var(--sugg-border); text-transform: uppercase; margin-bottom: 3px;
+  }
+  .mnote .acts { margin-top: 5px; display: flex; gap: 6px; }
+  .mnote .acts button {
+    border: 1px solid var(--line); background: var(--bg); font: inherit;
+    font-size: 11px; padding: 2px 8px; border-radius: 5px; cursor: pointer;
+  }
+  .mnote .acts .accept { border-color: var(--role-assistant); color: var(--role-assistant); }
+  .mnote .acts .reject { border-color: #dc2626; color: #dc2626; }
+  .mnote.human .acts { visibility: hidden; }
+  .mnote.human:hover .acts { visibility: visible; }
+
+  /* ---- annotation popover ---- */
+  #popover {
+    position: absolute; z-index: 200; display: none;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.16); padding: 8px;
+  }
+  #popover input {
+    border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px;
+    font: inherit; width: 280px;
+  }
+  #popover .hint { color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+  /* ---- map view ---- */
+  #map-view { padding: 18px; }
+  #map-wrap { max-width: 980px; margin: 0 auto; }
+  #map { width: 100%; height: 620px; background: var(--panel);
+         border: 1px solid var(--line); border-radius: 8px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0; font-size: 13px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+
+  /* ---- progress view ---- */
+  #progress-view { padding: 18px; max-width: 980px; margin: 0 auto; }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase;
+                   letter-spacing: .04em; color: var(--muted); margin: 18px 0 10px; }
+  #treemap { display: flex; flex-wrap: wrap; gap: 10px; }
+  .mode-block {
+    border: 1px solid var(--line); border-radius: 8px; padding: 12px;
+    background: var(--panel); min-width: 210px; flex: 1 1 210px;
+  }
+  .mode-block h3 { margin: 0 0 4px; font-size: 14px; font-family: ui-monospace, monospace; }
+  .mode-block .count { float: right; color: var(--muted); font-weight: 400; }
+  .mode-block .def { color: var(--muted); font-size: 12.5px; margin: 4px 0 8px; }
+  .mode-block .notes { list-style: none; margin: 0; padding: 0; }
+  .mode-block .notes li { font-size: 12.5px; padding: 3px 0; border-top: 1px dashed var(--line); cursor: pointer; }
+  .mode-block .notes li:hover { color: var(--role-user); }
+  .mode-block .status {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 8px; margin-left: 6px;
+  }
+  .status.candidate { background: #fef3c7; color: #92400e; }
+  .status.confirmed { background: #d1fae5; color: #065f46; }
+  .status.frozen    { background: #e0e7ff; color: #3730a3; }
+
+  #sugg-queue { background: var(--panel); border: 1px solid var(--line);
+                border-radius: 8px; padding: 12px; }
+  .queue-tools { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .queue-tools button {
+    border: 1px solid var(--line); background: var(--bg); font: inherit;
+    font-size: 12px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  }
+  .queue-tools .accept { border-color: var(--role-assistant); color: var(--role-assistant); }
+  .queue-tools .dismiss { border-color: #dc2626; color: #dc2626; }
+  .sugg-row { display: flex; gap: 8px; align-items: flex-start; padding: 7px 0;
+              border-top: 1px solid var(--line); font-size: 13px; }
+  .sugg-row .mode { font-family: ui-monospace, monospace; font-size: 12px;
+                    color: var(--sugg-border); min-width: 170px; }
+  .sugg-row .quote { flex: 1; cursor: pointer; }
+  .sugg-row .quote:hover { color: var(--role-user); }
+  .empty { color: var(--muted); font-size: 13px; padding: 10px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Cartwheel <span class="dim">error analysis</span></h1>
+  <div class="views">
+    <button data-view="trace" class="active">Trace</button>
+    <button data-view="map">Map</button>
+    <button data-view="progress">Progress</button>
+    <button data-view="labels">Labels</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="nav" id="trace-nav">
+    <select id="scenario-jump" title="All scenarios, including those without a note yet"></select>
+    <button id="prev">&larr;</button>
+    <span class="pos" id="pos">0 / 0</span>
+    <button id="next">&rarr;</button>
+  </div>
+  <div class="counts" id="counts"></div>
+</header>
+
+<div id="trace-view" class="view active">
+  <div class="trace-header" id="trace-header"></div>
+  <div class="filter-bar" id="filter-bar"></div>
+  <div id="trace-labels"></div>
+  <div class="trace-body-wrap">
+    <div class="trace-body" id="trace-body"></div>
+    <div class="margin-col" id="margin-col"></div>
+  </div>
+</div>
+
+<div id="map-view" class="view">
+  <div id="map-wrap">
+    <div class="legend">
+      <span><span class="dot" style="background:#94a3b8"></span> trace</span>
+      <span><span class="dot" style="background:#1a1a1a"></span> in sample</span>
+      <span><span class="dot" style="background:#f97316"></span> annotated</span>
+    </div>
+    <canvas id="map"></canvas>
+  </div>
+</div>
+
+<div id="progress-view" class="view">
+  <div class="section-title">Reviewed traces and incomplete judgments</div>
+  <div id="label-progress"></div>
+  <div class="section-title">Failure modes</div>
+  <div id="treemap"></div>
+  <div class="section-title">Agent suggestions to review</div>
+  <div id="sugg-queue"></div>
+</div>
+
+<div id="labels-view" class="view">
+  <div class="section-title">Present / absent on open-coded traces</div>
+  <p class="empty" style="padding:0 0 12px">Scenario ids are the frozen first column, sorted as support-0001 … Click an id to open that trace, then mark present or absent while you read. The first-failure note is only a reminder for one mode.</p>
+  <div id="labels-table"></div>
+</div>
+
+<div id="popover"><input id="note-input" placeholder="what went wrong? (Enter to save)" /><div class="hint">first failure only, in your own words</div></div>
+<div id="toast"></div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * State + API                                                         *
+ * ------------------------------------------------------------------ */
+const state = {
+  samples: [],       // [{trace_id, reason, trace, meta, flags}]
+  annotations: [],   // [{id, trace_id, quote, start, end, note, ts}]
+  suggestions: [],   // [{id, trace_id, mode, quote, start, end}]
+  patterns: {},      // {mode: {definition, status, count, example_trace_ids, example_quotes}}
+  graph: {nodes: [], clusters: []},
+  labels: {rows: []},
+  cur: 0,            // index into visibleSamples()
+  filter: 'annotated',     // all | annotated | suggestions
+};
+
+const api = {
+  async get(path) { const r = await fetch(path); return r.json(); },
+  async post(path, body) {
+    await fetch(path, {method: 'POST', headers: {'Content-Type': 'application/json'},
+                       body: JSON.stringify(body)});
+  },
+};
+
+/* Annotations on disk are usually a bare array (what this app POSTs), but the
+   committed demo seed wraps them as {"annotations": [...]} with a little
+   metadata. Accept either on read; we always write the bare array. */
+function asAnnotationList(a) {
+  if (Array.isArray(a)) return a;
+  if (a && Array.isArray(a.annotations)) return a.annotations;
+  return [];
+}
+function asSuggestionList(a) {
+  if (Array.isArray(a)) return a;
+  if (a && Array.isArray(a.suggestions)) return a.suggestions;
+  return [];
+}
+function ensureIds(items, prefix) {
+  return (items || []).map((it, i) => {
+    if (it && it.id) return it;
+    return {...it, id: prefix + i + '-' + (it.trace_id || i).toString().slice(0, 8)};
+  });
+}
+
+async function loadAll() {
+  const [samples, annotations, suggestions, patterns, graph, labels] = await Promise.all([
+    api.get('/api/samples'), api.get('/api/annotations'),
+    api.get('/api/suggestions'), api.get('/api/patterns'), api.get('/api/graph'),
+    api.get('/api/labels').catch(() => ({rows: []})),
+  ]);
+  state.samples = Array.isArray(samples) ? samples : [];
+  state.annotations = ensureIds(asAnnotationList(annotations), 'ann-');
+  state.suggestions = ensureIds(asSuggestionList(suggestions).map(s => ({
+    ...s, quote: s.quote || s.text || '',
+  })), 'sugg-');
+  state.patterns = patterns && typeof patterns === 'object' ? patterns : {};
+  state.graph = graph && graph.nodes ? graph : {nodes: [], clusters: []};
+  state.labels = labels && Array.isArray(labels.rows) ? labels : {rows: []};
+}
+
+/* localStorage backup of human annotations, per SKILL.md */
+function backupAnnotations() {
+  try { localStorage.setItem('cartwheel_annotations', JSON.stringify(state.annotations)); }
+  catch (e) {}
+}
+async function saveAnnotations() {
+  backupAnnotations();
+  await api.post('/api/annotations', state.annotations);
+}
+
+/* ------------------------------------------------------------------ *
+ * Rendering: the trace view                                          *
+ * ------------------------------------------------------------------ */
+function scenarioLabel(tid) {
+  const fromSample = sampleMeta(tid).scenario_id;
+  if (fromSample) return fromSample;
+  const a = state.annotations.find(x => x.trace_id === tid);
+  if (a && a.scenario_id) return a.scenario_id;
+  const s = state.suggestions.find(x => x.trace_id === tid);
+  if (s && s.scenario_id) return s.scenario_id;
+  return (tid || '').slice(0, 10);
+}
+function byScenarioId(aTid, bTid) {
+  return scenarioLabel(aTid).localeCompare(scenarioLabel(bTid), undefined, {numeric: true});
+}
+function visibleSamples() {
+  const ann = new Set(state.annotations.map(a => a.trace_id));
+  const sug = new Set(state.suggestions.map(s => s.trace_id));
+  let list = state.samples;
+  if (state.filter === 'annotated') list = state.samples.filter(s => ann.has(s.trace_id));
+  else if (state.filter === 'uncoded') list = state.samples.filter(s => !ann.has(s.trace_id));
+  else if (state.filter === 'suggestions') list = state.samples.filter(s => sug.has(s.trace_id));
+  if (state.filter !== 'all') {
+    list = list.slice().sort((a, b) => byScenarioId(a.trace_id, b.trace_id));
+  }
+  return list;
+}
+function normalizeScenarioId(q) {
+  const t = String(q || '').trim().toLowerCase();
+  if (!t) return '';
+  const m = t.match(/^(?:support[-_])?(\d+)$/);
+  if (m) return `support-${m[1].padStart(4, '0')}`;
+  return t;
+}
+function jumpToScenario(q) {
+  const sid = normalizeScenarioId(q);
+  if (!sid) return;
+  const turns = state.samples
+    .filter(s => String((s.meta || {}).scenario_id || '').toLowerCase() === sid)
+    .sort((a, b) => String((a.meta || {}).created_at || '')
+      .localeCompare(String((b.meta || {}).created_at || '')));
+  if (!turns.length) {
+    toast(`${sid} is not in this store`);
+    return;
+  }
+  gotoTrace(turns[0].trace_id);
+}
+function renderScenarioJump() {
+  const el = document.getElementById('scenario-jump');
+  if (!el) return;
+  const ids = [...new Set(state.samples.map(s => scenarioLabel(s.trace_id)).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+  const sig = ids.join('|');
+  if (el.dataset.sig !== sig) {
+    el.dataset.sig = sig;
+    el.innerHTML = ids.map(id =>
+      `<option value="${escape(id)}">${escape(id)}</option>`).join('');
+  }
+  const s = curTrace();
+  const cur = s ? scenarioLabel(s.trace_id) : '';
+  if (cur && ids.includes(cur)) el.value = cur;
+}
+function curTrace() { return visibleSamples()[state.cur]; }
+function sessionKey(s) {
+  if (!s) return '';
+  const m = s.meta || {};
+  return m.session_id || m.session_key || m.scenario_id || s.trace_id;
+}
+function sessionTurns(s) {
+  const key = sessionKey(s);
+  return state.samples
+    .filter(x => sessionKey(x) === key)
+    .sort((a, b) => String((a.meta || {}).created_at || '')
+      .localeCompare(String((b.meta || {}).created_at || '')));
+}
+
+function renderFilter() {
+  const el = document.getElementById('filter-bar');
+  if (!el) return;
+  const nAnn = new Set(state.annotations.map(a => a.trace_id)).size;
+  const nUnc = state.samples.filter(s => !state.annotations.some(a => a.trace_id === s.trace_id)).length;
+  const nSug = state.suggestions.length;
+  const btns = [
+    ['all', `All ${state.samples.length}`],
+    ['annotated', `Open-coded ${nAnn}`],
+    ['uncoded', `Uncoded ${nUnc}`],
+    ['suggestions', `Suggestions ${nSug}`],
+  ];
+  el.innerHTML = btns.map(([id, label]) =>
+    `<button data-filter="${id}" class="${state.filter === id ? 'active' : ''}">${label}</button>`
+  ).join('') +
+    `<button id="next-sugg">Next suggestion</button>`;
+  el.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => {
+    state.filter = b.dataset.filter;
+    state.cur = 0;
+    renderFilter(); renderHeader(); renderTrace(); updatePos();
+  });
+  const ns = document.getElementById('next-sugg');
+  if (ns) ns.onclick = () => {
+    const tid = state.suggestions[0] && state.suggestions[0].trace_id;
+    if (tid) gotoTrace(tid);
+  };
+}
+
+function renderHeader() {
+  const s = curTrace();
+  const h = document.getElementById('trace-header');
+  if (!s) { h.innerHTML = '<span class="meta">no samples yet</span>'; return; }
+  const m = s.meta || {};
+  const bits = [];
+  const turns = sessionTurns(s);
+  bits.push(`<span class="tid">${escape(scenarioLabel(s.trace_id))}</span>`);
+  bits.push(`<span class="meta mono">${escape((s.trace_id || '').slice(0, 12))}</span>`);
+  if (m.role) bits.push(`<span class="chip">${escape(m.role)}</span>`);
+  if (m.intent) bits.push(`<span class="chip">${escape(m.intent)}</span>`);
+  if (m.store) bits.push(`<span class="meta">store: ${escape(m.store)}</span>`);
+  bits.push(`<span class="chip">${turns.length} turn${turns.length === 1 ? '' : 's'}</span>`);
+  if (m.session_id) bits.push(`<span class="meta">session ${escape(m.session_id)}</span>`);
+  else bits.push(`<span class="meta">grouped by scenario (Langfuse sessionId empty)</span>`);
+  (s.flags || []).forEach(f => bits.push(`<span class="flag">${escape(f)}</span>`));
+  h.innerHTML = bits.join(' ');
+}
+
+/* Render the conversation: every Langfuse turn that shares session_id or
+   scenario_id, chronological. A tool_call and the tool_result that follows
+   it are grouped into one .step container (common region). */
+function renderTrace() {
+  const s = curTrace();
+  const body = document.getElementById('trace-body');
+  if (!s) { body.innerHTML = ''; return; }
+  const turns = sessionTurns(s);
+  const html = [];
+  turns.forEach((turn, tix) => {
+    const msgs = Array.isArray(turn.trace) ? turn.trace : [];
+    const selected = turn.trace_id === s.trace_id;
+    html.push(
+      `<div class="turn-banner${selected ? ' active' : ''}" data-tid="${escape(turn.trace_id)}">` +
+      `Turn ${tix + 1} of ${turns.length} · ${escape((turn.trace_id || '').slice(0, 12))}` +
+      `${selected ? ' · labels below are for this turn' : ' · click to load this turn’s labels'}</div>`
+    );
+    let i = 0;
+    while (i < msgs.length) {
+      const m = msgs[i];
+      if (m.role === 'tool_call') {
+        const parts = [renderMsg(m, i, turn.trace_id)];
+        if (i + 1 < msgs.length && msgs[i + 1].role === 'tool_result') {
+          parts.push(renderMsg(msgs[i + 1], i + 1, turn.trace_id));
+          i++;
+        }
+        html.push(`<div class="step">${parts.join('')}</div>`);
+      } else {
+        html.push(`<div class="step">${renderMsg(m, i, turn.trace_id)}</div>`);
+      }
+      i++;
+    }
+  });
+  body.innerHTML = html.join('');
+  body.querySelectorAll('.turn-banner[data-tid]').forEach(b => {
+    b.onclick = () => gotoTrace(b.dataset.tid);
+  });
+  applyHighlights();
+  layoutMargin();
+  renderTraceLabels();
+}
+
+function toolResultChips(raw) {
+  let obj = null;
+  try { obj = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { return ''; }
+  if (!obj || typeof obj !== 'object') return '';
+  const chips = [];
+  const order = obj.order || obj;
+  if (order && order.refund_eligible === false) chips.push('<span class="neg">refund_eligible: false</span>');
+  if (order && order.refund_eligible === true) chips.push('<span>refund_eligible: true</span>');
+  if (obj.title === '') chips.push('<span class="empty">title empty</span>');
+  if (Array.isArray(obj.products) && obj.products.some(p => p && p.title === '')) {
+    chips.push('<span class="empty">empty catalog title</span>');
+  }
+  if (obj.eligible === false) chips.push('<span class="neg">eligible: false</span>');
+  if (obj.eligible === true) chips.push('<span>eligible: true</span>');
+  if (!chips.length) return '';
+  return `<div class="result-chips">${chips.join('')}</div>`;
+}
+
+function renderMsg(m, idx, traceId) {
+  const role = m.role || 'assistant';
+  const label = (m.label || role).replace(/_/g, ' ');
+  const boiler = m.boilerplate ? ' boiler' : '';
+  let inner = '';
+  if (role === 'tool_call') {
+    inner = `<div class="fn">${escape(m.name || 'tool')}()</div>`;
+    if (m.arguments !== undefined) {
+      inner += `<details class="args"><summary>arguments</summary>` +
+               `<pre class="json">${escape(pretty(m.arguments))}</pre></details>`;
+    }
+  } else if (role === 'tool_result') {
+    const full = pretty(m.content !== undefined ? m.content : m.text);
+    const chips = toolResultChips(full);
+    const long = full.length > 240;
+    inner = chips;
+    if (long) {
+      inner += `<details class="args"><summary class="result-summary">result (${full.length} chars)</summary>` +
+              `<pre class="json annotatable" data-idx="${idx}" data-trace-id="${escape(traceId || '')}">${escape(full)}</pre></details>`;
+    } else {
+      inner += `<pre class="json annotatable" data-idx="${idx}" data-trace-id="${escape(traceId || '')}">${escape(full)}</pre>`;
+    }
+  } else {
+    const text = displayText(m);
+    inner = `<div class="text annotatable" data-idx="${idx}" data-trace-id="${escape(traceId || '')}">${escape(text)}</div>`;
+  }
+  return `<div class="msg${boiler}" data-role="${role}" data-idx="${idx}" data-trace-id="${escape(traceId || '')}">` +
+         `<div class="role">${escape(label)}</div>${inner}</div>`;
+}
+
+/* ------------------------------------------------------------------ *
+ * Highlights + margin notes                                          *
+ * ------------------------------------------------------------------ */
+function itemsForTrace() {
+  const s = curTrace();
+  const ids = new Set(sessionTurns(s).map(t => t.trace_id));
+  const anns = state.annotations.filter(a => ids.has(a.trace_id)).map(a => ({...a, kind: 'human'}));
+  const sugg = state.suggestions.filter(x => ids.has(x.trace_id)).map(x => ({...x, kind: 'sugg'}));
+  return [...anns, ...sugg];
+}
+
+/* Wrap each item's [start,end] span within its target block in a <span.hl>.
+   We re-render text then walk offsets, so overlapping spans stay simple: we
+   only highlight the first occurrence of the quote inside its block. */
+function applyHighlights() {
+  const items = itemsForTrace();
+  document.querySelectorAll('.annotatable').forEach(el => {
+    const idx = parseInt(el.dataset.idx, 10);
+    const elTid = el.dataset.traceId;
+    const mine = items.filter(it =>
+      (it.idx === idx || it.idx === undefined) &&
+      (!elTid || !it.trace_id || it.trace_id === elTid)
+    );
+    if (!mine.length) return;
+    let text = el.textContent;
+    // Build a list of [start, end, item] ranges found by quote match.
+    const ranges = [];
+    mine.forEach(it => {
+      if (!it.quote) return;
+      const pos = text.indexOf(it.quote);
+      if (pos >= 0) ranges.push([pos, pos + it.quote.length, it]);
+    });
+    if (!ranges.length) return;
+    ranges.sort((a, b) => a[0] - b[0]);
+    let out = '', cursor = 0;
+    ranges.forEach(([s, e, it]) => {
+      if (s < cursor) return; // skip overlaps
+      out += escape(text.slice(cursor, s));
+      const cls = it.kind === 'sugg' ? 'hl sugg' : 'hl';
+      out += `<span class="${cls}" data-item="${it.id}">${escape(text.slice(s, e))}</span>`;
+      cursor = e;
+    });
+    out += escape(text.slice(cursor));
+    el.innerHTML = out;
+  });
+}
+
+/* Position margin notes absolutely, top offset = highlight top relative to the
+   margin container (NO scrollTop; that double-counts). Stack with a min gap. */
+function layoutMargin() {
+  const col = document.getElementById('margin-col');
+  col.innerHTML = '';
+  const items = itemsForTrace();
+  if (!items.length) return;
+  const colRect = col.getBoundingClientRect();
+  const placed = [];
+  let lastBottom = 0;
+  // order by vertical position of the highlight
+  const withPos = items.map(it => {
+    const hl = document.querySelector(`.hl[data-item="${it.id}"]`);
+    const top = hl ? (hl.getBoundingClientRect().top - colRect.top) : 0;
+    return {it, top, hl};
+  }).sort((a, b) => a.top - b.top);
+
+  withPos.forEach(({it, top, hl}) => {
+    const note = document.createElement('div');
+    note.className = 'mnote ' + (it.kind === 'sugg' ? 'sugg' : 'human');
+    note.dataset.item = it.id;
+    let html = '';
+    if (it.kind === 'sugg') html += `<div class="tag">agent · ${escape(it.mode || '')}</div>`;
+    if (it.quote) html += `<div class="quote">"${escape(clip(it.quote, 80))}"</div>`;
+    html += `<div class="body">${escape(it.note || (it.kind === 'sugg' ? '(suggested instance)' : ''))}</div>`;
+    if (it.kind === 'sugg') {
+      html += `<div class="acts"><button class="accept" data-accept="${it.id}">accept</button>` +
+              `<button class="reject" data-reject="${it.id}">dismiss</button></div>`;
+    } else {
+      html += `<div class="acts"><button data-del="${it.id}">delete</button></div>`;
+    }
+    note.innerHTML = html;
+    const y = Math.max(top, lastBottom);
+    note.style.top = y + 'px';
+    col.appendChild(note);
+    lastBottom = y + note.offsetHeight + 8;
+
+    // hover linking between note and highlight
+    if (hl) {
+      note.addEventListener('mouseenter', () => hl.classList.add('outline'));
+      note.addEventListener('mouseleave', () => hl.classList.remove('outline'));
+      hl.addEventListener('mouseenter', () => note.classList.add('outline'));
+      hl.addEventListener('mouseleave', () => note.classList.remove('outline'));
+    }
+    placed.push(note);
+  });
+
+  col.querySelectorAll('[data-accept]').forEach(b =>
+    b.onclick = () => acceptSuggestion(b.dataset.accept));
+  col.querySelectorAll('[data-reject]').forEach(b =>
+    b.onclick = () => dismissSuggestion(b.dataset.reject));
+  col.querySelectorAll('[data-del]').forEach(b =>
+    b.onclick = () => deleteAnnotation(b.dataset.del));
+}
+
+/* ------------------------------------------------------------------ *
+ * In-place annotation                                                *
+ * ------------------------------------------------------------------ */
+let pendingRange = null;   // the wrapped pending-highlight span
+let pendingCtx = null;     // {trace_id, quote, idx}
+
+document.getElementById('trace-body').addEventListener('mouseup', () => {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const text = sel.toString().trim();
+  if (!text) return;
+  const anchor = sel.anchorNode && sel.anchorNode.parentElement
+    ? sel.anchorNode.parentElement.closest('.annotatable') : null;
+  if (!anchor) return;
+
+  // Wrap the range in a pending highlight BEFORE focusing the input, so the
+  // native selection clearing does not lose the reviewer's context.
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span');
+  span.className = 'hl pending-highlight';
+  try { range.surroundContents(span); } catch (e) { return; }
+  pendingRange = span;
+  pendingCtx = {
+    trace_id: (anchor.dataset.traceId || (curTrace() && curTrace().trace_id)),
+    quote: text,
+    idx: parseInt(anchor.dataset.idx, 10),
+  };
+  sel.removeAllRanges();
+
+  const rect = span.getBoundingClientRect();
+  const pop = document.getElementById('popover');
+  pop.style.display = 'block';
+  pop.style.left = (window.scrollX + rect.left) + 'px';
+  pop.style.top = (window.scrollY + rect.bottom + 6) + 'px';
+  const input = document.getElementById('note-input');
+  input.value = '';
+  input.focus();
+});
+
+document.getElementById('note-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { commitAnnotation(); }
+  else if (e.key === 'Escape') { cancelAnnotation(); }
+});
+document.addEventListener('mousedown', (e) => {
+  const pop = document.getElementById('popover');
+  if (pop.style.display === 'block' && !pop.contains(e.target)) cancelAnnotation();
+});
+
+function clearPending() {
+  if (pendingRange && pendingRange.parentNode) {
+    const parent = pendingRange.parentNode;
+    while (pendingRange.firstChild) parent.insertBefore(pendingRange.firstChild, pendingRange);
+    parent.removeChild(pendingRange);
+    parent.normalize();
+  }
+  pendingRange = null; pendingCtx = null;
+  document.getElementById('popover').style.display = 'none';
+}
+function cancelAnnotation() { clearPending(); renderTrace(); }
+
+async function commitAnnotation() {
+  const note = document.getElementById('note-input').value.trim();
+  if (!note || !pendingCtx) { clearPending(); return; }
+  state.annotations.push({
+    id: 'a' + Date.now() + Math.floor(Math.random() * 1000),
+    trace_id: pendingCtx.trace_id,
+    quote: pendingCtx.quote,
+    idx: pendingCtx.idx,
+    note, ts: new Date().toISOString(),
+  });
+  clearPending();
+  await saveAnnotations();
+  renderTrace();
+  renderProgress();
+  toast('saved · the agent is grouping your notes');
+}
+
+async function deleteAnnotation(id) {
+  state.annotations = state.annotations.filter(a => a.id !== id);
+  await saveAnnotations();
+  renderTrace(); renderProgress();
+}
+
+/* Accepting a suggestion promotes it to a human-confirmed annotation with
+   source accepted_suggestion, and removes it from the queue. */
+async function acceptSuggestion(id) {
+  const s = state.suggestions.find(x => x.id === id);
+  if (!s) return;
+  state.annotations.push({
+    id: 'a' + Date.now() + Math.floor(Math.random() * 1000),
+    trace_id: s.trace_id, quote: s.quote, idx: s.idx,
+    note: s.note || (s.mode ? `[${s.mode}]` : '(accepted)'),
+    source: 'accepted_suggestion', mode: s.mode, ts: new Date().toISOString(),
+    scenario_id: s.scenario_id,
+  });
+  state.suggestions = state.suggestions.filter(x => x.id !== id);
+  await saveAnnotations();
+  await api.post('/api/suggestions', state.suggestions);
+  if (s.mode) await setLabel(s.trace_id, s.mode, '1');
+  renderTrace(); renderProgress(); renderFilter();
+}
+async function dismissSuggestion(id) {
+  state.suggestions = state.suggestions.filter(x => x.id !== id);
+  await api.post('/api/suggestions', state.suggestions);
+  renderTrace(); renderProgress(); renderFilter();
+}
+
+/* ------------------------------------------------------------------ *
+ * Progress view                                                      *
+ * ------------------------------------------------------------------ */
+function renderProgress() {
+  const prog = document.getElementById('label-progress');
+  if (prog) {
+    const modes = modeNames();
+    const ids = [...new Set(state.annotations.map(a => a.trace_id))];
+    const cells = ids.length * modes.length;
+    const filled = ids.reduce((n, tid) =>
+      n + modes.filter(m => labelValue(tid, m) !== '').length, 0);
+    prog.innerHTML = `<div class="empty" style="padding:0 0 12px">` +
+      `${ids.length} reviewed traces · ${filled} / ${cells || 0} present/absent cells filled · ` +
+      `${state.suggestions.length} suggestions still pending` +
+      `</div>`;
+  }
+  renderTreemap();
+  renderQueue();
+}
+
+/* Normalize the taxonomy into [{name, ...}] regardless of on-disk shape.
+   During a live session the agent pushes a flat map {mode_name: {...}} as it
+   groups notes. The committed demo/final state uses the Artifact L schema:
+   {modes: [{name, ...}], human_signoff, reconciliation}. Accept both. */
+function normalizePatterns(p) {
+  if (!p || typeof p !== 'object') return [];
+  if (Array.isArray(p.modes)) return p.modes.filter(m => m && m.name);
+  return Object.entries(p).map(([name, m]) => ({name, ...(m || {})}));
+}
+function modeCount(m) {
+  // a live mode carries `count`; a final mode carries the any-instance count.
+  if (typeof m.count === 'number') return m.count;
+  if (typeof m.any_instance_count === 'number') return m.any_instance_count;
+  if (typeof m.first_failure_count === 'number') return m.first_failure_count;
+  return (m.example_trace_ids || []).length;
+}
+
+function renderTreemap() {
+  const el = document.getElementById('treemap');
+  const modes = normalizePatterns(state.patterns);
+  if (!modes.length) { el.innerHTML = '<div class="empty">No modes yet. As you annotate, the agent groups your notes here.</div>'; return; }
+  // block area roughly proportional to count via flex-grow
+  modes.sort((a, b) => modeCount(b) - modeCount(a));
+  el.innerHTML = modes.map(m => {
+    // a live mode has free-text example_quotes; a final mode lists trace ids.
+    const ids = m.example_trace_ids || [];
+    const quotes = m.example_quotes || [];
+    const items = (quotes.length ? quotes : ids).slice(0, 6).map((val, i) =>
+      `<li data-tid="${escape(quotes.length ? (ids[i] || '') : val)}">${escape(clip(val, 90))}</li>`).join('');
+    const status = m.status || 'candidate';
+    const grow = Math.max(1, modeCount(m));
+    const sev = typeof m.severity === 'number' ? ` · sev ${m.severity}` : '';
+    return `<div class="mode-block" style="flex-grow:${grow}">` +
+      `<h3>${escape(m.name)}<span class="status ${status}">${status}</span>` +
+      `<span class="count">${modeCount(m)}${sev}</span></h3>` +
+      `<div class="def">${escape(m.definition || '')}</div>` +
+      `<ul class="notes">${items}</ul></div>`;
+  }).join('');
+  el.querySelectorAll('li[data-tid]').forEach(li => {
+    li.onclick = () => { if (li.dataset.tid) gotoTrace(li.dataset.tid); };
+  });
+}
+
+function renderQueue() {
+  const el = document.getElementById('sugg-queue');
+  if (!state.suggestions.length) { el.innerHTML = '<div class="empty">No pending suggestions.</div>'; return; }
+  const rows = state.suggestions.map(s =>
+    `<div class="sugg-row"><input type="checkbox" data-id="${s.id}" checked />` +
+    `<span class="mode">${escape(s.mode || '')}</span>` +
+    `<span class="quote" data-tid="${escape(s.trace_id)}">"${escape(clip(s.quote || '', 110))}"</span></div>`
+  ).join('');
+  el.innerHTML =
+    `<div class="queue-tools">` +
+    `<label><input type="checkbox" id="sel-all" checked /> select all</label>` +
+    `<button class="accept" id="accept-sel">Accept selected</button>` +
+    `<button class="dismiss" id="dismiss-sel">Dismiss selected</button>` +
+    `<span class="empty" style="padding:0">${state.suggestions.length} pending · favor recall, prune the rest</span>` +
+    `</div>` + rows;
+
+  document.getElementById('sel-all').onchange = (e) => {
+    el.querySelectorAll('.sugg-row input[type=checkbox]').forEach(c => c.checked = e.target.checked);
+  };
+  el.querySelectorAll('.quote[data-tid]').forEach(q =>
+    q.onclick = () => gotoTrace(q.dataset.tid));
+  document.getElementById('accept-sel').onclick = () => bulkQueue(true);
+  document.getElementById('dismiss-sel').onclick = () => bulkQueue(false);
+}
+
+async function bulkQueue(accept) {
+  const el = document.getElementById('sugg-queue');
+  const ids = [...el.querySelectorAll('.sugg-row input[type=checkbox]:checked')].map(c => c.dataset.id);
+  for (const id of ids) { accept ? await acceptSuggestion(id) : await dismissSuggestion(id); }
+}
+
+function modeNames() {
+  return normalizePatterns(state.patterns).map(m => m.name);
+}
+function sampleMeta(tid) {
+  const s = state.samples.find(x => x.trace_id === tid);
+  return (s && s.meta) || {};
+}
+function labelValue(tid, mode) {
+  const row = (state.labels.rows || []).find(r => r.trace_id === tid);
+  if (!row || !row.modes) return '';
+  const v = row.modes[mode];
+  if (v === 1 || v === '1') return '1';
+  if (v === 0 || v === '0') return '0';
+  return '';
+}
+async function setLabel(tid, mode, value) {
+  state.labels.rows = state.labels.rows || [];
+  let row = state.labels.rows.find(r => r.trace_id === tid);
+  if (!row) {
+    row = {trace_id: tid, scenario_id: sampleMeta(tid).scenario_id, modes: {}};
+    state.labels.rows.push(row);
+  }
+  row.modes = row.modes || {};
+  if (value === '') delete row.modes[mode];
+  else row.modes[mode] = Number(value);
+  await api.post('/api/labels', state.labels);
+  if (document.getElementById('labels-view').classList.contains('active')) renderLabels();
+  else renderTraceLabels();
+}
+function firstFailureNote(tid) {
+  const a = state.annotations.find(x => x.trace_id === tid);
+  return a ? (a.note || a.quote || '') : '';
+}
+function unlabeledModeCount(tid) {
+  return modeNames().filter(m => labelValue(tid, m) === '').length;
+}
+function renderTraceLabels() {
+  const el = document.getElementById('trace-labels');
+  if (!el) return;
+  const s = curTrace();
+  const modes = modeNames();
+  if (!s || !modes.length) { el.innerHTML = ''; return; }
+  const note = firstFailureNote(s.trace_id);
+  const left = unlabeledModeCount(s.trace_id);
+  const rows = modes.map(m => {
+    const v = labelValue(s.trace_id, m);
+    return `<label class="tl-row"><span class="tl-name">${escape(m.replace(/_/g, ' '))}</span>` +
+      `<select data-tid="${escape(s.trace_id)}" data-mode="${escape(m)}">` +
+      `<option value=""${v===''?' selected':''}>?</option>` +
+      `<option value="1"${v==='1'?' selected':''}>present</option>` +
+      `<option value="0"${v==='0'?' selected':''}>absent</option></select></label>`;
+  }).join('');
+  const noteHtml = note
+    ? `<div class="tl-note">Your first-failure note: ${escape(clip(note, 240))}</div>`
+    : `<div class="tl-note">No open-coding note on this trace. Read it before marking a mode present.</div>`;
+  el.innerHTML = `<div class="tl-title">${escape(scenarioLabel(s.trace_id))} · turn ${(s.trace_id || '').slice(0, 12)} · ${left} of ${modes.length} modes still unmarked</div>` +
+    noteHtml + `<div class="tl-grid">${rows}</div>`;
+  el.querySelectorAll('select').forEach(sel => sel.onchange = () =>
+    setLabel(sel.dataset.tid, sel.dataset.mode, sel.value));
+}
+function renderLabels() {
+  const el = document.getElementById('labels-table');
+  if (!el) return;
+  const modes = modeNames();
+  const ids = [...new Set(state.annotations.map(a => a.trace_id))].sort(byScenarioId);
+  if (!modes.length || !ids.length) {
+    el.innerHTML = '<div class="empty">Open-code traces and freeze modes first.</div>';
+    return;
+  }
+  const head = '<th>scenario</th>' + modes.map(m => `<th>${escape(m.replace(/_/g, ' '))}</th>`).join('');
+  const rows = ids.map(tid => {
+    const sid = scenarioLabel(tid);
+    const note = firstFailureNote(tid);
+    const cells = modes.map(m => {
+      const v = labelValue(tid, m);
+      return `<td><select data-tid="${escape(tid)}" data-mode="${escape(m)}">` +
+        `<option value=""${v===''?' selected':''}>?</option>` +
+        `<option value="1"${v==='1'?' selected':''}>present</option>` +
+        `<option value="0"${v==='0'?' selected':''}>absent</option></select></td>`;
+    }).join('');
+    return `<tr><td class="sid" data-tid="${escape(tid)}">${escape(sid)}` +
+      (note ? `<div class="sid-note" title="${escape(note)}">${escape(clip(note, 40))}</div>` : '') +
+      `</td>${cells}</tr>`;
+  }).join('');
+  el.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+  el.querySelectorAll('.sid').forEach(td => td.onclick = () => gotoTrace(td.dataset.tid, 'annotated'));
+  el.querySelectorAll('select').forEach(sel => sel.onchange = () =>
+    setLabel(sel.dataset.tid, sel.dataset.mode, sel.value));
+}
+
+/* ------------------------------------------------------------------ *
+ * Map view (canvas scatter of the 2D projection)                     *
+ * ------------------------------------------------------------------ */
+function renderMap() {
+  const canvas = document.getElementById('map');
+  const nodes = state.graph.nodes || [];
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = 620;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+  if (!nodes.length) {
+    ctx.fillStyle = '#9ca3af'; ctx.font = '13px sans-serif';
+    ctx.fillText('No projection yet (GET /api/graph is empty).', 20, 30);
+    return;
+  }
+  const xs = nodes.map(n => n.x), ys = nodes.map(n => n.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+  const pad = 30;
+  const sx = v => pad + (v - minX) / ((maxX - minX) || 1) * (w - 2 * pad);
+  const sy = v => pad + (v - minY) / ((maxY - minY) || 1) * (h - 2 * pad);
+  const hues = ['#94a3b8','#a78bfa','#60a5fa','#34d399','#fbbf24','#f472b6','#22d3ee','#fb923c'];
+  const sampleIds = new Set(state.samples.map(s => s.trace_id));
+  const annIds = new Set(state.annotations.map(a => a.trace_id));
+
+  nodes.forEach(n => {
+    const annotated = annIds.has(n.trace_id);
+    const sampled = sampleIds.has(n.trace_id);
+    ctx.beginPath();
+    ctx.arc(sx(n.x), sy(n.y), sampled ? 6 : 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = annotated ? '#f97316' : hues[(n.cluster || 0) % hues.length];
+    ctx.fill();
+    if (sampled) { ctx.lineWidth = 1.5; ctx.strokeStyle = '#1a1a1a'; ctx.stroke(); }
+  });
+
+  canvas._nodes = nodes.map(n => ({...n, px: sx(n.x), py: sy(n.y)}));
+}
+document.getElementById('map').addEventListener('click', (e) => {
+  const canvas = document.getElementById('map');
+  const nodes = canvas._nodes || [];
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  let best = null, bestD = 1e9;
+  const sampleIds = new Set(state.samples.map(s => s.trace_id));
+  nodes.forEach(n => {
+    if (!sampleIds.has(n.trace_id)) return;
+    const d = (n.px - mx) ** 2 + (n.py - my) ** 2;
+    if (d < bestD) { bestD = d; best = n; }
+  });
+  if (best && bestD < 200) gotoTrace(best.trace_id);
+});
+
+/* ------------------------------------------------------------------ *
+ * Navigation + view switching                                        *
+ * ------------------------------------------------------------------ */
+function gotoTrace(tid, preferFilter) {
+  if (preferFilter) state.filter = preferFilter;
+  let vis = visibleSamples();
+  let i = vis.findIndex(s => s.trace_id === tid);
+  if (i < 0) {
+    state.filter = 'all';
+    vis = visibleSamples();
+    i = vis.findIndex(s => s.trace_id === tid);
+  }
+  if (i < 0) { toast('that trace is not in the current sample'); return; }
+  state.cur = i;
+  switchView('trace');
+  renderFilter(); renderHeader(); renderTrace(); updatePos();
+}
+function updatePos() {
+  const vis = visibleSamples();
+  document.getElementById('pos').textContent =
+    vis.length ? `${state.cur + 1} / ${vis.length}` : '0 / 0';
+  renderScenarioJump();
+}
+document.getElementById('prev').onclick = () => {
+  if (state.cur > 0) { state.cur--; renderHeader(); renderTrace(); updatePos(); }
+};
+document.getElementById('next').onclick = () => {
+  if (state.cur < visibleSamples().length - 1) { state.cur++; renderHeader(); renderTrace(); updatePos(); }
+};
+document.getElementById('scenario-jump').onchange = () => {
+  jumpToScenario(document.getElementById('scenario-jump').value);
+};
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'j' || e.key === 'ArrowDown') document.getElementById('next').click();
+  if (e.key === 'k' || e.key === 'ArrowUp') document.getElementById('prev').click();
+});
+
+function switchView(name) {
+  document.querySelectorAll('.views button').forEach(b =>
+    b.classList.toggle('active', b.dataset.view === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(name + '-view').classList.add('active');
+  document.getElementById('trace-nav').style.display = name === 'trace' ? 'flex' : 'none';
+  if (name === 'map') renderMap();
+  if (name === 'progress') renderProgress();
+  if (name === 'labels') renderLabels();
+}
+document.querySelectorAll('.views button').forEach(b =>
+  b.onclick = () => switchView(b.dataset.view));
+
+function updateCounts() {
+  document.getElementById('counts').textContent =
+    `${state.samples.length} traces · ${state.annotations.length} notes · ` +
+    `${normalizePatterns(state.patterns).length} modes · ${state.suggestions.length} suggestions`;
+}
+
+/* ------------------------------------------------------------------ *
+ * Polling: pick up agent pushes (samples, suggestions, patterns) and *
+ * replayed annotations. Compare-and-render, ~2s, like the watcher.   *
+ * ------------------------------------------------------------------ */
+let lastSig = '';
+async function poll() {
+  try {
+    const [samples, suggestions, patterns, annotations] = await Promise.all([
+      api.get('/api/samples'), api.get('/api/suggestions'),
+      api.get('/api/patterns'), api.get('/api/annotations'),
+    ]);
+    const newSampleCount = Array.isArray(samples) ? samples.length : 0;
+    const grewSamples = newSampleCount > state.samples.length;
+    const newSuggCount = asSuggestionList(suggestions).length;
+    const grewSugg = newSuggCount > state.suggestions.length;
+
+    // Merge remote annotations that this client did not create (replay demo,
+    // or a second reviewer). De-dup by id, falling back to a content key for
+    // seeded items that arrive without one.
+    const key = a => `${a.trace_id || ''}::${(a.note || '').slice(0, 80)}::${(a.quote || '').slice(0, 40)}`;
+    const seen = new Set(state.annotations.map(key));
+    const remote = asAnnotationList(annotations);
+    const merged = [...state.annotations];
+    remote.forEach(a => { const k = key(a); if (!seen.has(k)) { seen.add(k); merged.push(a); } });
+
+    const sig = JSON.stringify([newSampleCount, newSuggCount,
+      normalizePatterns(patterns).length, merged.length]);
+    if (sig === lastSig) return;
+    lastSig = sig;
+
+    state.samples = Array.isArray(samples) ? samples : state.samples;
+    state.suggestions = ensureIds(asSuggestionList(suggestions).map(s => ({
+      ...s, quote: s.quote || s.text || '',
+    })), 'sugg-');
+    state.patterns = patterns && typeof patterns === 'object' ? patterns : state.patterns;
+    state.annotations = merged;
+
+    if (grewSamples) toast(`new traces added to your batch (${newSampleCount})`);
+    if (grewSugg) toast(`new agent suggestions to review (${newSuggCount})`);
+
+    renderFilter(); renderHeader(); renderTrace(); renderProgress(); updatePos(); updateCounts();
+    if (document.getElementById('labels-view').classList.contains('active')) renderLabels();
+  } catch (e) { /* server not up yet; keep trying */ }
+}
+
+/* ------------------------------------------------------------------ *
+ * Utilities                                                          *
+ * ------------------------------------------------------------------ */
+function escape(s) {
+  return String(s === undefined || s === null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function displayText(m) {
+  let text = m.text !== undefined ? m.text : m.content;
+  if (typeof text !== 'string') return pretty(text);
+  try {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed) && parsed[0] && Array.isArray(parsed[0].parts)) {
+      return parsed.map(p => (p.parts || []).map(x => x.content || '').join('\n')).join('\n\n');
+    }
+  } catch (e) {}
+  return text;
+}
+function pretty(v) {
+  if (typeof v === 'string') return v;
+  try { return JSON.stringify(v, null, 2); } catch (e) { return String(v); }
+}
+function clip(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; }
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+window.addEventListener('resize', () => {
+  if (document.getElementById('map-view').classList.contains('active')) renderMap();
+  else layoutMargin();
+});
+
+/* ------------------------------------------------------------------ *
+ * Boot                                                               *
+ * ------------------------------------------------------------------ */
+(async function boot() {
+  await loadAll();
+  renderFilter(); renderHeader(); renderTrace(); renderProgress(); updatePos(); updateCounts();
+  setInterval(poll, 2000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,3361 @@
+{
+  "nodes": [
+    {
+      "trace_id": "681df836beacca84c843af83f1dc856f",
+      "x": 3.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0113",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0113",
+        "created_at": "2026-09-15T12:06:52.778Z"
+      }
+    },
+    {
+      "trace_id": "4a8b70a393a60164844f6c11d9524a9e",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0250",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0250",
+        "created_at": "2026-09-14T18:13:38.046Z"
+      }
+    },
+    {
+      "trace_id": "a4391d1b52b5345b686384e93e090146",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0249",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0249",
+        "created_at": "2026-09-14T18:13:33.020Z"
+      }
+    },
+    {
+      "trace_id": "90995f80e1679e8fd8554c7e1e255de1",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0248",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0248",
+        "created_at": "2026-09-14T18:13:27.946Z"
+      }
+    },
+    {
+      "trace_id": "26b7eb5ca7fb76d9038af9de396d02d2",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0247",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0247",
+        "created_at": "2026-09-14T18:13:22.906Z"
+      }
+    },
+    {
+      "trace_id": "e0c1a7f7f5ffa489b35f330ede45b207",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0246",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0246",
+        "created_at": "2026-09-14T18:13:17.874Z"
+      }
+    },
+    {
+      "trace_id": "19e01120c48d31f9da7821b084ae969a",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0245",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0245",
+        "created_at": "2026-09-14T18:13:07.808Z"
+      }
+    },
+    {
+      "trace_id": "b21d76d3e22022c23ceb58e14f68fb4d",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0244",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0244",
+        "created_at": "2026-09-14T18:13:02.774Z"
+      }
+    },
+    {
+      "trace_id": "35f3f25ed7779afbed7b61cef9a621bb",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0243",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0243",
+        "created_at": "2026-09-14T18:12:57.744Z"
+      }
+    },
+    {
+      "trace_id": "97ab75f0feb00cba7aeba372ae352714",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0241",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0241",
+        "created_at": "2026-09-14T18:12:42.648Z"
+      }
+    },
+    {
+      "trace_id": "d333f3e4d82fa67892980813863dce53",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0240",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0240",
+        "created_at": "2026-09-14T18:11:57.543Z"
+      }
+    },
+    {
+      "trace_id": "87cf7045d5048f9ba40d14d678c2d3a2",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0239",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0239",
+        "created_at": "2026-09-14T18:11:47.461Z"
+      }
+    },
+    {
+      "trace_id": "53a72fd04a44cf36b0d56c52cfd6eef2",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0238",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0238",
+        "created_at": "2026-09-14T18:11:37.395Z"
+      }
+    },
+    {
+      "trace_id": "0d11d713980de33d431179dab3c8271e",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0237",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0237",
+        "created_at": "2026-09-14T18:11:32.373Z"
+      }
+    },
+    {
+      "trace_id": "362b07ecb3f45ba622177e6554f42b36",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0236",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0236",
+        "created_at": "2026-09-14T18:11:27.352Z"
+      }
+    },
+    {
+      "trace_id": "59cea219612f65877a4c929e97baf4a7",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0235",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0235",
+        "created_at": "2026-09-14T18:11:22.305Z"
+      }
+    },
+    {
+      "trace_id": "6f29caf566a87425d1d0813e24ceb805",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0233",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0233",
+        "created_at": "2026-09-14T18:11:07.245Z"
+      }
+    },
+    {
+      "trace_id": "3912b1873319351da21a9c18a8a34dd2",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0232",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0232",
+        "created_at": "2026-09-14T18:11:02.200Z"
+      }
+    },
+    {
+      "trace_id": "213f7d3895b8e29b7042d108dbf688fb",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0230",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0230",
+        "created_at": "2026-09-14T18:10:47.102Z"
+      }
+    },
+    {
+      "trace_id": "329e0961987e28745c0ff12fc2bc14fa",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0229",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0229",
+        "created_at": "2026-09-14T18:10:37.044Z"
+      }
+    },
+    {
+      "trace_id": "bc0414c71a153a15b7ca7790de2935ad",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0228",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0228",
+        "created_at": "2026-09-14T18:10:32.017Z"
+      }
+    },
+    {
+      "trace_id": "028510c028679ddbf6a36735fcbf0626",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0227",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0227",
+        "created_at": "2026-09-14T18:10:21.952Z"
+      }
+    },
+    {
+      "trace_id": "30fb82ff0c2769df76fa04cd1a9533dc",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0226",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0226",
+        "created_at": "2026-09-14T18:10:16.907Z"
+      }
+    },
+    {
+      "trace_id": "46e6df37f03710b01040bc25f52b7095",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0225",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0225",
+        "created_at": "2026-09-14T18:10:11.875Z"
+      }
+    },
+    {
+      "trace_id": "35dad3b8dbf33c95d51f233ecf41e2ea",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0224",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0224",
+        "created_at": "2026-09-14T18:10:01.789Z"
+      }
+    },
+    {
+      "trace_id": "5eb388c439d8c0c9f110ca0d61b0be26",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0223",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0223",
+        "created_at": "2026-09-14T18:09:46.760Z"
+      }
+    },
+    {
+      "trace_id": "0736a652f227bfb1a1111949dd80558f",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0222",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0222",
+        "created_at": "2026-09-14T18:09:41.729Z"
+      }
+    },
+    {
+      "trace_id": "927c10912603af8f5a12609c0a0e9519",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0221",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0221",
+        "created_at": "2026-09-14T18:09:31.650Z"
+      }
+    },
+    {
+      "trace_id": "e2cb12bccf2a3f99927fbf5cc0f73a7e",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0220",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0220",
+        "created_at": "2026-09-14T18:09:21.565Z"
+      }
+    },
+    {
+      "trace_id": "858bbdf671f1d9eb3977076963b55460",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0219",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0219",
+        "created_at": "2026-09-14T18:09:16.527Z"
+      }
+    },
+    {
+      "trace_id": "996ee7d89df837787bda9884f1da3808",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0218",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0218",
+        "created_at": "2026-09-14T18:08:51.410Z"
+      }
+    },
+    {
+      "trace_id": "a67b6bd8ee14f91d5dfe8697526d9491",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0217",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0217",
+        "created_at": "2026-09-14T18:08:36.357Z"
+      }
+    },
+    {
+      "trace_id": "ea98b2aa297aa7b43c67bf923c3586a7",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0216",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0216",
+        "created_at": "2026-09-14T18:08:26.295Z"
+      }
+    },
+    {
+      "trace_id": "eb9f4fda0eb5972bfec51802979a7a6a",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0215",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0215",
+        "created_at": "2026-09-14T18:08:11.218Z"
+      }
+    },
+    {
+      "trace_id": "de9785a51c03980e2317207bbf06ee69",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0214",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0214",
+        "created_at": "2026-09-14T18:08:01.164Z"
+      }
+    },
+    {
+      "trace_id": "e26e99f3fc7c001c7b693c2d0eeda270",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0213",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0213",
+        "created_at": "2026-09-14T18:07:51.112Z"
+      }
+    },
+    {
+      "trace_id": "076708e401009af40ae4a182d3218618",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0212",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0212",
+        "created_at": "2026-09-14T18:07:41.031Z"
+      }
+    },
+    {
+      "trace_id": "72edc7ee52bf86eaa4dbc63498fa390c",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0211",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0211",
+        "created_at": "2026-09-14T18:07:35.999Z"
+      }
+    },
+    {
+      "trace_id": "0c21645723aea5303c936dcc04691c57",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0210",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0210",
+        "created_at": "2026-09-14T18:07:30.943Z"
+      }
+    },
+    {
+      "trace_id": "d8d02a2f0da5194b919daef5ea63ec13",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0209",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0209",
+        "created_at": "2026-09-14T18:07:25.903Z"
+      }
+    },
+    {
+      "trace_id": "c885d64bbed2736f4c20b069dc65b203",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0208",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0208",
+        "created_at": "2026-09-14T18:07:15.811Z"
+      }
+    },
+    {
+      "trace_id": "bcbc499ffd54f0f004ebb31a5069a4ff",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0207",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0207",
+        "created_at": "2026-09-14T18:07:10.776Z"
+      }
+    },
+    {
+      "trace_id": "38b7978a4eb38453ef1615ce11dd85bd",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0206",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0206",
+        "created_at": "2026-09-14T18:07:05.740Z"
+      }
+    },
+    {
+      "trace_id": "e020491e4e901b263052e2d70cda02bf",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0204",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0204",
+        "created_at": "2026-09-14T18:06:50.623Z"
+      }
+    },
+    {
+      "trace_id": "fd6eb410357db0efaf2db44b1d4780e6",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0203",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0203",
+        "created_at": "2026-09-14T18:06:45.576Z"
+      }
+    },
+    {
+      "trace_id": "a6b26b0a8d915476d97b474c2c5d9626",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0202",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0202",
+        "created_at": "2026-09-14T18:06:35.529Z"
+      }
+    },
+    {
+      "trace_id": "52b3b0710be1018e4c541dbbfa0b5032",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0200",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0200",
+        "created_at": "2026-09-14T18:06:25.454Z"
+      }
+    },
+    {
+      "trace_id": "c4f16d0c7cc458192c1f11f1ff9f0f76",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0199",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0199",
+        "created_at": "2026-09-14T18:06:15.367Z"
+      }
+    },
+    {
+      "trace_id": "d54b7f4511d8c7a43e0d12fdc62f91b7",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0197",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0197",
+        "created_at": "2026-09-14T18:06:00.335Z"
+      }
+    },
+    {
+      "trace_id": "8ddef760b676759a3f923ebe2d42f238",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0196",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0196",
+        "created_at": "2026-09-14T18:05:55.264Z"
+      }
+    },
+    {
+      "trace_id": "8f517179d8b6430db0bab709c83bed19",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0195",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0195",
+        "created_at": "2026-09-14T18:05:50.243Z"
+      }
+    },
+    {
+      "trace_id": "767797d20fed446cf24263559481de48",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0194",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0194",
+        "created_at": "2026-09-14T18:05:45.183Z"
+      }
+    },
+    {
+      "trace_id": "2176aeb8ba23cebeccfede5206dbb646",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0193",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0193",
+        "created_at": "2026-09-14T18:05:35.121Z"
+      }
+    },
+    {
+      "trace_id": "eb3cde1852d9a56cecd7f60c4fc787bf",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0192",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0192",
+        "created_at": "2026-09-14T18:05:30.099Z"
+      }
+    },
+    {
+      "trace_id": "ff93ca8bbe6ceafeac8500b3ed8423d7",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0191",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0191",
+        "created_at": "2026-09-14T18:05:20.030Z"
+      }
+    },
+    {
+      "trace_id": "b512d4d5dab6d4865b23e9e3cc6d1c3b",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0187",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0187",
+        "created_at": "2026-09-14T18:04:54.871Z"
+      }
+    },
+    {
+      "trace_id": "3ca40d508d48757c99c107984767c38a",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0185",
+        "role": "merchant",
+        "intent": "refund",
+        "session_key": "support-0185",
+        "created_at": "2026-09-14T18:04:39.802Z"
+      }
+    },
+    {
+      "trace_id": "0e8b8a8640f35e35cb682112de74e71e",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0176",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0176",
+        "created_at": "2026-09-14T18:03:24.385Z"
+      }
+    },
+    {
+      "trace_id": "edcd3145901043b011b367323f2b1aad",
+      "x": 3.2,
+      "y": 2.32,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0175",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0175",
+        "created_at": "2026-09-14T18:03:14.310Z"
+      }
+    },
+    {
+      "trace_id": "f3914817cafe7a4a768d425f1552a9c7",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0173",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0173",
+        "created_at": "2026-09-14T18:02:54.219Z"
+      }
+    },
+    {
+      "trace_id": "a880eb61708882dcf41e0c4d13ed09a9",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0171",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0171",
+        "created_at": "2026-09-14T18:02:39.121Z"
+      }
+    },
+    {
+      "trace_id": "2df6a95f03f0d90701a5332f3b1ea5d1",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0170",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0170",
+        "created_at": "2026-09-14T18:02:34.086Z"
+      }
+    },
+    {
+      "trace_id": "862f95d966276d9696469fb297cd80ef",
+      "x": 3.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0169",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0169",
+        "created_at": "2026-09-14T18:02:24.022Z"
+      }
+    },
+    {
+      "trace_id": "e6b95242988619f0e0cb0b816f70eaac",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0168",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0168",
+        "created_at": "2026-09-14T18:02:18.989Z"
+      }
+    },
+    {
+      "trace_id": "4e1f23657a9de6ec459708848aa60cb1",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0167",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0167",
+        "created_at": "2026-09-14T18:01:48.930Z"
+      }
+    },
+    {
+      "trace_id": "1822198736497d9bd41881f5e230dd01",
+      "x": 3.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0166",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0166",
+        "created_at": "2026-09-14T18:01:33.868Z"
+      }
+    },
+    {
+      "trace_id": "50b5cff5dd3a0c8f854a69024c8bfd10",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0165",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0165",
+        "created_at": "2026-09-14T18:01:13.778Z"
+      }
+    },
+    {
+      "trace_id": "75dfac633462399762153cc005f3317b",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0164",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0164",
+        "created_at": "2026-09-14T18:00:48.701Z"
+      }
+    },
+    {
+      "trace_id": "5a5539da250e6910458e48ff171cf6d8",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0163",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0163",
+        "created_at": "2026-09-14T18:00:43.661Z"
+      }
+    },
+    {
+      "trace_id": "46ff1884879b7223b7404649f7703eb0",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0162",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0162",
+        "created_at": "2026-09-14T18:00:33.612Z"
+      }
+    },
+    {
+      "trace_id": "291e64fba05f811055150f21c11ee08f",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0161",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0161",
+        "created_at": "2026-09-14T18:00:23.565Z"
+      }
+    },
+    {
+      "trace_id": "8d86f5ac4bc9c089ebd334ba9aea9963",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0160",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0160",
+        "created_at": "2026-09-14T17:59:53.506Z"
+      }
+    },
+    {
+      "trace_id": "9d5703c99160bb491e299832d51ee5c9",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0159",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0159",
+        "created_at": "2026-09-14T17:59:33.440Z"
+      }
+    },
+    {
+      "trace_id": "1bd3c0a41a1b1ac993a19ebefc80026f",
+      "x": 3.2,
+      "y": 2.0,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0158",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0158",
+        "created_at": "2026-09-14T17:59:28.401Z"
+      }
+    },
+    {
+      "trace_id": "ac5fe2e1070baa7d3add1f5b0504c7c6",
+      "x": 3.2,
+      "y": 2.0,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0157",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0157",
+        "created_at": "2026-09-14T17:59:18.328Z"
+      }
+    },
+    {
+      "trace_id": "273e99e129ccbe1a1e3234d7d076226b",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0156",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0156",
+        "created_at": "2026-09-14T17:59:13.293Z"
+      }
+    },
+    {
+      "trace_id": "fe43225f71433d7615aab58b1d756700",
+      "x": 3.2,
+      "y": 2.32,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0155",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0155",
+        "created_at": "2026-09-14T17:59:03.242Z"
+      }
+    },
+    {
+      "trace_id": "197b49dca91c9b8770663143c38bb3e2",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0154",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0154",
+        "created_at": "2026-09-14T17:58:58.206Z"
+      }
+    },
+    {
+      "trace_id": "3334d6d259219650c6580ba178951edc",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0153",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0153",
+        "created_at": "2026-09-14T17:58:48.151Z"
+      }
+    },
+    {
+      "trace_id": "27b030aa5869387f354487d1b6e9b2ec",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0152",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0152",
+        "created_at": "2026-09-14T17:58:38.086Z"
+      }
+    },
+    {
+      "trace_id": "b1a957c973237bc009f66c23c7d974a2",
+      "x": 1.15,
+      "y": 2.4,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0151",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0151",
+        "created_at": "2026-09-14T17:58:27.985Z"
+      }
+    },
+    {
+      "trace_id": "5a0adeb86d5f6e74f5429fd20a423ff3",
+      "x": 2.15,
+      "y": 2.4,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0150",
+        "role": "support",
+        "intent": "cancellation",
+        "session_key": "support-0150",
+        "created_at": "2026-09-14T17:58:17.906Z"
+      }
+    },
+    {
+      "trace_id": "7f1fe57a662a0cce61baa28da6d36ce3",
+      "x": 2.15,
+      "y": 2.16,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0149",
+        "role": "support",
+        "intent": "cancellation",
+        "session_key": "support-0149",
+        "created_at": "2026-09-14T17:58:07.849Z"
+      }
+    },
+    {
+      "trace_id": "8daaf3a744d2a3b6c79f962c7fd38405",
+      "x": 2.15,
+      "y": 2.4,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0148",
+        "role": "support",
+        "intent": "cancellation",
+        "session_key": "support-0148",
+        "created_at": "2026-09-14T17:58:02.800Z"
+      }
+    },
+    {
+      "trace_id": "97032d989e41428f29b493bce2f1e5c2",
+      "x": 2.15,
+      "y": 2.4,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0147",
+        "role": "support",
+        "intent": "cancellation",
+        "session_key": "support-0147",
+        "created_at": "2026-09-14T17:57:52.727Z"
+      }
+    },
+    {
+      "trace_id": "a0b6948f9eb1635c610c383e6353501e",
+      "x": 1.15,
+      "y": 2.16,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0142",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0142",
+        "created_at": "2026-09-14T17:57:12.465Z"
+      }
+    },
+    {
+      "trace_id": "243e5996afd6278e760d57b50808f7fa",
+      "x": 2.15,
+      "y": 2.16,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0140",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0140",
+        "created_at": "2026-09-14T17:56:42.264Z"
+      }
+    },
+    {
+      "trace_id": "72cc6ee89ef1b942e3d5fe5dc55c62d6",
+      "x": 2.15,
+      "y": 2.4,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0139",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0139",
+        "created_at": "2026-09-14T17:55:57.154Z"
+      }
+    },
+    {
+      "trace_id": "c9210b0eaa3cda8c053a90d1151dd730",
+      "x": 0.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0138",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0138",
+        "created_at": "2026-09-14T17:55:52.109Z"
+      }
+    },
+    {
+      "trace_id": "7a017c744b20204a09c0b6bfcaeceef0",
+      "x": 1.3499999999999999,
+      "y": 2.24,
+      "cluster": 9,
+      "meta": {
+        "scenario_id": "support-0137",
+        "role": "shopper",
+        "intent": "support_feedback",
+        "session_key": "support-0137",
+        "created_at": "2026-09-14T17:55:47.059Z"
+      }
+    },
+    {
+      "trace_id": "2abbe409d55ebfc80d187d4f426a9fec",
+      "x": 0.75,
+      "y": 2.4,
+      "cluster": 5,
+      "meta": {
+        "scenario_id": "support-0136",
+        "role": "support",
+        "intent": "out_of_scope",
+        "session_key": "support-0136",
+        "created_at": "2026-09-14T17:55:42.038Z"
+      }
+    },
+    {
+      "trace_id": "4dd560a34a07a9b94956d68eacd46f7c",
+      "x": 0.75,
+      "y": 2.24,
+      "cluster": 5,
+      "meta": {
+        "scenario_id": "support-0134",
+        "role": "shopper",
+        "intent": "out_of_scope",
+        "session_key": "support-0134",
+        "created_at": "2026-09-14T17:55:31.961Z"
+      }
+    },
+    {
+      "trace_id": "304a23dade5f82be3b4147b55e23c107",
+      "x": 0.75,
+      "y": 2.48,
+      "cluster": 5,
+      "meta": {
+        "scenario_id": "support-0133",
+        "role": "shopper",
+        "intent": "out_of_scope",
+        "session_key": "support-0133",
+        "created_at": "2026-09-14T17:55:26.926Z"
+      }
+    },
+    {
+      "trace_id": "9460d99e406c8506e7d7989ba3bc3dd6",
+      "x": 1.45,
+      "y": 2.48,
+      "cluster": 3,
+      "meta": {
+        "scenario_id": "support-0132",
+        "role": "shopper",
+        "intent": "find_order",
+        "session_key": "support-0132",
+        "created_at": "2026-09-14T17:55:21.877Z"
+      }
+    },
+    {
+      "trace_id": "598d77945280c7c19fd85e5682e23eb5",
+      "x": 2.05,
+      "y": 2.16,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0131",
+        "role": "support",
+        "intent": "product_search",
+        "session_key": "support-0131",
+        "created_at": "2026-09-14T17:55:11.787Z"
+      }
+    },
+    {
+      "trace_id": "01258aad94eab3210c4b818cab5ef94a",
+      "x": 3.05,
+      "y": 2.08,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0130",
+        "role": "merchant",
+        "intent": "product_search",
+        "session_key": "support-0130",
+        "created_at": "2026-09-14T17:55:01.743Z"
+      }
+    },
+    {
+      "trace_id": "573bb25ab828eb79fa46466f5886125a",
+      "x": 2.05,
+      "y": 2.16,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0129",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0129",
+        "created_at": "2026-09-14T17:54:46.673Z"
+      }
+    },
+    {
+      "trace_id": "a7641ee7b1dc9a94a139ccad42ee5ac3",
+      "x": 1.9,
+      "y": 2.0,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0128",
+        "role": "shopper",
+        "intent": "policy_question",
+        "session_key": "support-0128",
+        "created_at": "2026-09-14T17:54:41.636Z"
+      }
+    },
+    {
+      "trace_id": "625b9e2d044a8ccfa206de20cb7cc793",
+      "x": 1.9,
+      "y": 2.08,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0127",
+        "role": "shopper",
+        "intent": "policy_question",
+        "session_key": "support-0127",
+        "created_at": "2026-09-14T17:54:31.582Z"
+      }
+    },
+    {
+      "trace_id": "b08406557445bb7a6e9f57fd9e2898ee",
+      "x": 2.9,
+      "y": 2.32,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0126",
+        "role": "support",
+        "intent": "policy_question",
+        "session_key": "support-0126",
+        "created_at": "2026-09-14T17:54:21.530Z"
+      }
+    },
+    {
+      "trace_id": "1a9e484ff970e5ba7c76196ef80c13ce",
+      "x": 4.9,
+      "y": 2.0,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0124",
+        "role": "merchant",
+        "intent": "policy_question",
+        "session_key": "support-0124",
+        "created_at": "2026-09-14T17:53:51.352Z"
+      }
+    },
+    {
+      "trace_id": "14e570e5be1bbb1ecfe7928311f3aae3",
+      "x": 2.9,
+      "y": 2.32,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0123",
+        "role": "shopper",
+        "intent": "policy_question",
+        "session_key": "support-0123",
+        "created_at": "2026-09-14T17:53:31.253Z"
+      }
+    },
+    {
+      "trace_id": "17b8f8979739f9780c29ba8e56f282a0",
+      "x": 3.9,
+      "y": 2.32,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0122",
+        "role": "merchant",
+        "intent": "policy_question",
+        "session_key": "support-0122",
+        "created_at": "2026-09-14T17:53:16.178Z"
+      }
+    },
+    {
+      "trace_id": "6f3b0a752dd40edcf55b23f3ae422140",
+      "x": 1.9,
+      "y": 2.32,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0121",
+        "role": "support",
+        "intent": "policy_question",
+        "session_key": "support-0121",
+        "created_at": "2026-09-14T17:53:06.122Z"
+      }
+    },
+    {
+      "trace_id": "2cc1c3b22bc3875901f3e3903dd11cb7",
+      "x": 1.9,
+      "y": 2.48,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0120",
+        "role": "shopper",
+        "intent": "policy_question",
+        "session_key": "support-0120",
+        "created_at": "2026-09-14T17:52:56.090Z"
+      }
+    },
+    {
+      "trace_id": "d53da7abe32f479600198507cb793676",
+      "x": 1.9,
+      "y": 2.24,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0119",
+        "role": "shopper",
+        "intent": "policy_question",
+        "session_key": "support-0119",
+        "created_at": "2026-09-14T17:52:46.037Z"
+      }
+    },
+    {
+      "trace_id": "6559628afeffdfa3fd60b7c5aebaeb60",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0118",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0118",
+        "created_at": "2026-09-14T17:52:25.979Z"
+      }
+    },
+    {
+      "trace_id": "efea1100f2a1627e254ec5b1e88a56be",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0117",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0117",
+        "created_at": "2026-09-14T17:52:10.935Z"
+      }
+    },
+    {
+      "trace_id": "6ce1bbba635a4c91ea0aacc33f228260",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0112",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0112",
+        "created_at": "2026-09-14T17:50:30.624Z"
+      }
+    },
+    {
+      "trace_id": "9a5c95b320a0834c211058b729ce6890",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0110",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0110",
+        "created_at": "2026-09-14T17:50:20.563Z"
+      }
+    },
+    {
+      "trace_id": "98e41760b7b5e2413b7ef4cab7225df2",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0106",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0106",
+        "created_at": "2026-09-14T17:49:45.343Z"
+      }
+    },
+    {
+      "trace_id": "1144aa4365eb9bbb77cc9102bc6a2591",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0105",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0105",
+        "created_at": "2026-09-14T17:49:40.298Z"
+      }
+    },
+    {
+      "trace_id": "2ef2a6765bdb5fd4dd03547a45e0ad14",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0104",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0104",
+        "created_at": "2026-09-14T17:49:35.252Z"
+      }
+    },
+    {
+      "trace_id": "4e6eee529106d00d3696f727997a8f74",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0091",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0091",
+        "created_at": "2026-09-14T17:48:14.684Z"
+      }
+    },
+    {
+      "trace_id": "329499acbef34e2564f5e24583334ad7",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0077",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0077",
+        "created_at": "2026-09-14T17:46:34.092Z"
+      }
+    },
+    {
+      "trace_id": "23b969462f51a4524393fe88ad0a05a8",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0076",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0076",
+        "created_at": "2026-09-14T17:46:29.065Z"
+      }
+    },
+    {
+      "trace_id": "26e8a1154bd2fdc913341f5af22fe70c",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0075",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0075",
+        "created_at": "2026-09-14T17:46:18.977Z"
+      }
+    },
+    {
+      "trace_id": "de50b3cef5d7c56a9811bd0b0aebff3a",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0074",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0074",
+        "created_at": "2026-09-14T17:46:08.904Z"
+      }
+    },
+    {
+      "trace_id": "04f9a35fb2299ba326e79534f74aa092",
+      "x": 2.05,
+      "y": 2.08,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0073",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0073",
+        "created_at": "2026-09-14T17:46:03.848Z"
+      }
+    },
+    {
+      "trace_id": "9d9955152c9dd5bb9b9aa8f96ca4d14c",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0072",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0072",
+        "created_at": "2026-09-14T17:45:58.819Z"
+      }
+    },
+    {
+      "trace_id": "aef6a89a4e65ca2a5386561d8a2a663c",
+      "x": 3.2,
+      "y": 2.32,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0070",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0070",
+        "created_at": "2026-09-14T17:45:38.701Z"
+      }
+    },
+    {
+      "trace_id": "ecc04c8659af232e4312b56c4c459266",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0069",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0069",
+        "created_at": "2026-09-14T17:45:28.615Z"
+      }
+    },
+    {
+      "trace_id": "16c0adca46f17fba2b2569e277e831ea",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0068",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0068",
+        "created_at": "2026-09-14T17:45:18.565Z"
+      }
+    },
+    {
+      "trace_id": "79a800f1e652b90a00c830a9ea93132f",
+      "x": 1.15,
+      "y": 2.32,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0067",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0067",
+        "created_at": "2026-09-14T17:45:13.523Z"
+      }
+    },
+    {
+      "trace_id": "0fc929aaaf89aa06c564400c466e08a0",
+      "x": 3.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0066",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0066",
+        "created_at": "2026-09-14T17:44:48.355Z"
+      }
+    },
+    {
+      "trace_id": "f288b98be8dda07c4ce9d87475b2c27a",
+      "x": 1.15,
+      "y": 2.24,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0065",
+        "role": "support",
+        "intent": "cancellation",
+        "session_key": "support-0065",
+        "created_at": "2026-09-14T17:44:38.304Z"
+      }
+    },
+    {
+      "trace_id": "4e0006a22b56fe69445442c7b15fb8dd",
+      "x": 1.15,
+      "y": 2.24,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0062",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0062",
+        "created_at": "2026-09-14T17:43:58.055Z"
+      }
+    },
+    {
+      "trace_id": "b142eb943355db6f94f977af3bf832e1",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0061",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0061",
+        "created_at": "2026-09-14T17:43:48.005Z"
+      }
+    },
+    {
+      "trace_id": "521f45ab839138a45cb42b618753a926",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0059",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0059",
+        "created_at": "2026-09-14T17:43:32.918Z"
+      }
+    },
+    {
+      "trace_id": "ab817ea32976aaccb377fe126dde809e",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0057",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0057",
+        "created_at": "2026-09-14T17:43:22.863Z"
+      }
+    },
+    {
+      "trace_id": "24fa173f8da02a88fa0e6368edabf253",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0056",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0056",
+        "created_at": "2026-09-14T17:43:12.817Z"
+      }
+    },
+    {
+      "trace_id": "9ae36b17aed192dc7344c67f70706bde",
+      "x": 0.75,
+      "y": 2.24,
+      "cluster": 5,
+      "meta": {
+        "scenario_id": "support-0055",
+        "role": "shopper",
+        "intent": "out_of_scope",
+        "session_key": "support-0055",
+        "created_at": "2026-09-14T17:43:02.790Z"
+      }
+    },
+    {
+      "trace_id": "d6089887ab692c3999a78337592e461b",
+      "x": 0.0,
+      "y": 2.4,
+      "cluster": 0,
+      "meta": {
+        "scenario_id": "support-0054",
+        "role": "support",
+        "intent": "account_change",
+        "session_key": "support-0054",
+        "created_at": "2026-09-14T17:42:57.741Z"
+      }
+    },
+    {
+      "trace_id": "f018a7d584bdde16a1e869e979fbe478",
+      "x": 0.0,
+      "y": 2.32,
+      "cluster": 0,
+      "meta": {
+        "scenario_id": "support-0053",
+        "role": "merchant",
+        "intent": "account_change",
+        "session_key": "support-0053",
+        "created_at": "2026-09-14T17:42:52.732Z"
+      }
+    },
+    {
+      "trace_id": "8ef1012eacf2ce140c9b5bf19cb3c69e",
+      "x": 0.0,
+      "y": 2.4,
+      "cluster": 0,
+      "meta": {
+        "scenario_id": "support-0051",
+        "role": "shopper",
+        "intent": "account_change",
+        "session_key": "support-0051",
+        "created_at": "2026-09-14T17:42:47.695Z"
+      }
+    },
+    {
+      "trace_id": "411910d6b9874e6d8e08b056ba4fcd2b",
+      "x": 0.0,
+      "y": 2.08,
+      "cluster": 0,
+      "meta": {
+        "scenario_id": "support-0050",
+        "role": "shopper",
+        "intent": "account_change",
+        "session_key": "support-0050",
+        "created_at": "2026-09-14T17:42:37.627Z"
+      }
+    },
+    {
+      "trace_id": "26f550c7b10a5895d92ed37ca94bd8db",
+      "x": 2.3,
+      "y": 2.24,
+      "cluster": 2,
+      "meta": {
+        "scenario_id": "support-0049",
+        "role": "merchant",
+        "intent": "dispute",
+        "session_key": "support-0049",
+        "created_at": "2026-09-14T17:42:27.556Z"
+      }
+    },
+    {
+      "trace_id": "02f45763b7bcb14cd18d090e6e7b4caa",
+      "x": 2.3,
+      "y": 2.4,
+      "cluster": 2,
+      "meta": {
+        "scenario_id": "support-0048",
+        "role": "merchant",
+        "intent": "dispute",
+        "session_key": "support-0048",
+        "created_at": "2026-09-14T17:42:22.538Z"
+      }
+    },
+    {
+      "trace_id": "06a7a7bf339f6579f9c4abd750a31158",
+      "x": 2.3,
+      "y": 2.48,
+      "cluster": 2,
+      "meta": {
+        "scenario_id": "support-0047",
+        "role": "merchant",
+        "intent": "dispute",
+        "session_key": "support-0047",
+        "created_at": "2026-09-14T17:42:12.465Z"
+      }
+    },
+    {
+      "trace_id": "a1baa26dacf89089dfd4768e28212be2",
+      "x": 5.3,
+      "y": 2.16,
+      "cluster": 2,
+      "meta": {
+        "scenario_id": "support-0045",
+        "role": "shopper",
+        "intent": "dispute",
+        "session_key": "support-0045",
+        "created_at": "2026-09-14T17:41:37.266Z"
+      }
+    },
+    {
+      "trace_id": "035181a617816126ec905e6b77b160ac",
+      "x": 3.3,
+      "y": 2.24,
+      "cluster": 2,
+      "meta": {
+        "scenario_id": "support-0044",
+        "role": "shopper",
+        "intent": "dispute",
+        "session_key": "support-0044",
+        "created_at": "2026-09-14T17:41:27.193Z"
+      }
+    },
+    {
+      "trace_id": "103bac4dc239bcafab6c154ca58ece84",
+      "x": 3.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0038",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0038",
+        "created_at": "2026-09-14T17:40:21.903Z"
+      }
+    },
+    {
+      "trace_id": "a83bbe0d4b3475cd70dcd17245ea02de",
+      "x": 3.2,
+      "y": 2.0,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0037",
+        "role": "support",
+        "intent": "refund",
+        "session_key": "support-0037",
+        "created_at": "2026-09-14T17:40:11.843Z"
+      }
+    },
+    {
+      "trace_id": "0c83ae3beed9b81f7007f3de53831e32",
+      "x": 3.2,
+      "y": 2.0,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0036",
+        "role": "support",
+        "intent": "refund",
+        "session_key": "support-0036",
+        "created_at": "2026-09-14T17:40:01.797Z"
+      }
+    },
+    {
+      "trace_id": "9b15b4a7db5230c70832a34cf80d3613",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0032",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0032",
+        "created_at": "2026-09-14T17:39:26.582Z"
+      }
+    },
+    {
+      "trace_id": "7057f81d21c9d6b5174ae82477cf7ad0",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0029",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0029",
+        "created_at": "2026-09-14T17:38:46.417Z"
+      }
+    },
+    {
+      "trace_id": "3b2403bede802d017c6aa9dc81dbff69",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0028",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0028",
+        "created_at": "2026-09-14T17:38:41.385Z"
+      }
+    },
+    {
+      "trace_id": "748f025311752e722be541326480f91c",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0026",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0026",
+        "created_at": "2026-09-14T17:38:26.267Z"
+      }
+    },
+    {
+      "trace_id": "a0993fc50dd64ee9ff238c60cc632995",
+      "x": 3.2,
+      "y": 2.0,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0024",
+        "role": "merchant",
+        "intent": "refund",
+        "session_key": "support-0024",
+        "created_at": "2026-09-14T17:37:36.102Z"
+      }
+    },
+    {
+      "trace_id": "824072e2c17f07b07f7d4849ef2f16cf",
+      "x": 3.2,
+      "y": 2.32,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0023",
+        "role": "support",
+        "intent": "refund",
+        "session_key": "support-0023",
+        "created_at": "2026-09-14T17:37:26.051Z"
+      }
+    },
+    {
+      "trace_id": "8de6e054799af162e547bff9044b32a9",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0022",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0022",
+        "created_at": "2026-09-14T17:37:16.019Z"
+      }
+    },
+    {
+      "trace_id": "9d3977e9f170a0c4f8080db374135e81",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0021",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0021",
+        "created_at": "2026-09-14T17:37:05.953Z"
+      }
+    },
+    {
+      "trace_id": "1fe4cb3bed20cc83bf972034490c7855",
+      "x": 2.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0020",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0020",
+        "created_at": "2026-09-14T17:36:45.854Z"
+      }
+    },
+    {
+      "trace_id": "826c1d5ce72431dc8adfe78f66df7c35",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0019",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0019",
+        "created_at": "2026-09-14T17:36:35.787Z"
+      }
+    },
+    {
+      "trace_id": "e418b3522f844001e96b17d506147380",
+      "x": 2.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0018",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0018",
+        "created_at": "2026-09-14T17:36:25.732Z"
+      }
+    },
+    {
+      "trace_id": "289fcd3cb28b25ebcfc004a450dde588",
+      "x": 2.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0017",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0017",
+        "created_at": "2026-09-14T17:36:10.654Z"
+      }
+    },
+    {
+      "trace_id": "3337984d1f88aa0041fd76d8864d5f3b",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0016",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0016",
+        "created_at": "2026-09-14T17:36:05.618Z"
+      }
+    },
+    {
+      "trace_id": "7e190f385f4ab8272b9968d100b7c156",
+      "x": 3.05,
+      "y": 2.4,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0014",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0014",
+        "created_at": "2026-09-14T17:35:45.488Z"
+      }
+    },
+    {
+      "trace_id": "8274bd4b386911b7bebf8a4778a31353",
+      "x": 3.05,
+      "y": 2.24,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0012",
+        "role": "merchant",
+        "intent": "product_search",
+        "session_key": "support-0012",
+        "created_at": "2026-09-14T17:35:30.423Z"
+      }
+    },
+    {
+      "trace_id": "d27b9ca9e388c8a1c92b643562259bcf",
+      "x": 2.05,
+      "y": 2.16,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0010",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0010",
+        "created_at": "2026-09-14T17:35:10.276Z"
+      }
+    },
+    {
+      "trace_id": "798948fed2defc7cad8337237e6fb4ab",
+      "x": 2.05,
+      "y": 2.08,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0009",
+        "role": "support",
+        "intent": "product_search",
+        "session_key": "support-0009",
+        "created_at": "2026-09-14T17:35:00.209Z"
+      }
+    },
+    {
+      "trace_id": "f77a24115544a03bc040cdcc13e85a3d",
+      "x": 3.05,
+      "y": 2.24,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0008",
+        "role": "merchant",
+        "intent": "product_search",
+        "session_key": "support-0008",
+        "created_at": "2026-09-14T17:34:50.152Z"
+      }
+    },
+    {
+      "trace_id": "009ce603675a025e843aac97722e03bc",
+      "x": 2.05,
+      "y": 2.16,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0007",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0007",
+        "created_at": "2026-09-14T17:34:45.124Z"
+      }
+    },
+    {
+      "trace_id": "1c4b2b670a2c28f766061a71e86dbd67",
+      "x": 2.05,
+      "y": 2.48,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0006",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0006",
+        "created_at": "2026-09-14T17:34:35.062Z"
+      }
+    },
+    {
+      "trace_id": "73640065198365dced4bf56bf0d9af33",
+      "x": 2.05,
+      "y": 2.32,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0004",
+        "role": "support",
+        "intent": "product_search",
+        "session_key": "support-0004",
+        "created_at": "2026-09-14T17:34:20.006Z"
+      }
+    },
+    {
+      "trace_id": "374ab3f5f0be50b49581c1590219bb5b",
+      "x": 3.05,
+      "y": 2.16,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0003",
+        "role": "merchant",
+        "intent": "product_search",
+        "session_key": "support-0003",
+        "created_at": "2026-09-14T17:34:09.957Z"
+      }
+    },
+    {
+      "trace_id": "e7b8051465832dd937e8c55d37d6cce7",
+      "x": 2.05,
+      "y": 2.08,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0002",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0002",
+        "created_at": "2026-09-14T17:33:59.908Z"
+      }
+    },
+    {
+      "trace_id": "c151d6bf178a2534c067d70cffd5b988",
+      "x": 2.05,
+      "y": 2.4,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0001",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0001",
+        "created_at": "2026-09-14T17:33:49.858Z"
+      }
+    },
+    {
+      "trace_id": "d194012f863f8571f52e5b5bfd9b8843",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0113",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0113",
+        "created_at": "2026-09-15T12:06:37.683Z"
+      }
+    },
+    {
+      "trace_id": "6129a50a5cdcef55670c2435fcc759f8",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0242",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0242",
+        "created_at": "2026-09-14T18:12:47.676Z"
+      }
+    },
+    {
+      "trace_id": "80a82039efc558ce4fcaaed9246a0c27",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0234",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0234",
+        "created_at": "2026-09-14T18:11:17.269Z"
+      }
+    },
+    {
+      "trace_id": "5dc57c758a451919ba655a55c8f7a884",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0231",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0231",
+        "created_at": "2026-09-14T18:10:57.188Z"
+      }
+    },
+    {
+      "trace_id": "07bce4966e37949b70166a3db1142b78",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0205",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0205",
+        "created_at": "2026-09-14T18:07:00.692Z"
+      }
+    },
+    {
+      "trace_id": "220dfd75d0814b2990851f080b748443",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0201",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0201",
+        "created_at": "2026-09-14T18:06:30.486Z"
+      }
+    },
+    {
+      "trace_id": "33b55ad56287a117f1dd12ecc23e49fc",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0198",
+        "role": "support",
+        "intent": "order_status",
+        "session_key": "support-0198",
+        "created_at": "2026-09-14T18:06:10.330Z"
+      }
+    },
+    {
+      "trace_id": "0f6a0d85910c41b9521f7178a4b78209",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0190",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0190",
+        "created_at": "2026-09-14T18:05:14.988Z"
+      }
+    },
+    {
+      "trace_id": "e5a8d3ee5806dc1b1a220a29476265f8",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0189",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0189",
+        "created_at": "2026-09-14T18:05:09.972Z"
+      }
+    },
+    {
+      "trace_id": "9248fdaf23b49422cd804dc3e41f0a4d",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0188",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0188",
+        "created_at": "2026-09-14T18:04:59.903Z"
+      }
+    },
+    {
+      "trace_id": "a2a65dcebfa7d990ccff4e1fa5b1645b",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0186",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0186",
+        "created_at": "2026-09-14T18:04:49.847Z"
+      }
+    },
+    {
+      "trace_id": "5b97d531263224e731fd11021886f235",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0184",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0184",
+        "created_at": "2026-09-14T18:04:29.766Z"
+      }
+    },
+    {
+      "trace_id": "bf666b5b3d12c300a2497b802f71894d",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0183",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0183",
+        "created_at": "2026-09-14T18:04:24.729Z"
+      }
+    },
+    {
+      "trace_id": "d178b915f54bdc5477fff4285add5943",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0182",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0182",
+        "created_at": "2026-09-14T18:04:14.687Z"
+      }
+    },
+    {
+      "trace_id": "0ed466bb85cfc05aa41b70f621d78404",
+      "x": 3.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0181",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0181",
+        "created_at": "2026-09-14T18:04:04.637Z"
+      }
+    },
+    {
+      "trace_id": "ca0851230c893ec3fc4dbbe3315e84b6",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0180",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0180",
+        "created_at": "2026-09-14T18:03:59.581Z"
+      }
+    },
+    {
+      "trace_id": "e1466fd38352f4b4ce93f1598c652986",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0179",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0179",
+        "created_at": "2026-09-14T18:03:49.525Z"
+      }
+    },
+    {
+      "trace_id": "e230b40a71685e1e7cf2f9a89f4e370c",
+      "x": 3.2,
+      "y": 2.0,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0178",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0178",
+        "created_at": "2026-09-14T18:03:39.445Z"
+      }
+    },
+    {
+      "trace_id": "b12a2cb31563b78daf6cfc0005f95da7",
+      "x": 3.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0177",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0177",
+        "created_at": "2026-09-14T18:03:29.401Z"
+      }
+    },
+    {
+      "trace_id": "c524f30b9febc7a48e29f23992488606",
+      "x": 3.2,
+      "y": 2.0,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0174",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0174",
+        "created_at": "2026-09-14T18:03:04.253Z"
+      }
+    },
+    {
+      "trace_id": "697035821c343a263e31971118018d88",
+      "x": 3.2,
+      "y": 2.32,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0172",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0172",
+        "created_at": "2026-09-14T18:02:49.196Z"
+      }
+    },
+    {
+      "trace_id": "0017cd9769ffbda99ee11e1421d918dc",
+      "x": 2.15,
+      "y": 2.16,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0146",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0146",
+        "created_at": "2026-09-14T17:57:42.648Z"
+      }
+    },
+    {
+      "trace_id": "6a94daf384c497e57f88f4d911170e13",
+      "x": 2.15,
+      "y": 2.48,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0145",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0145",
+        "created_at": "2026-09-14T17:57:32.627Z"
+      }
+    },
+    {
+      "trace_id": "adb6adf114bdbfc19a97e730515f0656",
+      "x": 2.15,
+      "y": 2.16,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0144",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0144",
+        "created_at": "2026-09-14T17:57:27.532Z"
+      }
+    },
+    {
+      "trace_id": "f341d43176f847a615b17535c8f29930",
+      "x": 2.15,
+      "y": 2.4,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0143",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0143",
+        "created_at": "2026-09-14T17:57:17.478Z"
+      }
+    },
+    {
+      "trace_id": "7cdee7a1cc2375136069db93157bd545",
+      "x": 2.15,
+      "y": 2.32,
+      "cluster": 1,
+      "meta": {
+        "scenario_id": "support-0141",
+        "role": "shopper",
+        "intent": "cancellation",
+        "session_key": "support-0141",
+        "created_at": "2026-09-14T17:57:02.378Z"
+      }
+    },
+    {
+      "trace_id": "bb9b108a39b753d2c4d67c5fac3dce05",
+      "x": 0.75,
+      "y": 2.4,
+      "cluster": 5,
+      "meta": {
+        "scenario_id": "support-0135",
+        "role": "shopper",
+        "intent": "out_of_scope",
+        "session_key": "support-0135",
+        "created_at": "2026-09-14T17:55:37.006Z"
+      }
+    },
+    {
+      "trace_id": "6f1523d18491d4f9c7b0352729c4bbab",
+      "x": 0.8999999999999999,
+      "y": 2.4,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0127",
+        "role": "shopper",
+        "intent": "policy_question",
+        "session_key": "support-0127",
+        "created_at": "2026-09-14T17:54:36.613Z"
+      }
+    },
+    {
+      "trace_id": "e6b1d55173c03908b1a879cd629f02b0",
+      "x": 2.9,
+      "y": 2.48,
+      "cluster": 6,
+      "meta": {
+        "scenario_id": "support-0125",
+        "role": "shopper",
+        "intent": "policy_question",
+        "session_key": "support-0125",
+        "created_at": "2026-09-14T17:54:11.448Z"
+      }
+    },
+    {
+      "trace_id": "af7e71767d3a279c520edf9ea797fb1e",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0116",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0116",
+        "created_at": "2026-09-14T17:52:00.902Z"
+      }
+    },
+    {
+      "trace_id": "c9314eadd5911f488c5637107cb0e5e5",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0115",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0115",
+        "created_at": "2026-09-14T17:51:45.855Z"
+      }
+    },
+    {
+      "trace_id": "6fa6948693891e0980398e02dfb34f3c",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0114",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0114",
+        "created_at": "2026-09-14T17:51:25.785Z"
+      }
+    },
+    {
+      "trace_id": "fc021ea8fa4d4350ccb4745d17b74e4b",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0111",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0111",
+        "created_at": "2026-09-14T17:50:25.601Z"
+      }
+    },
+    {
+      "trace_id": "5c447e9335dc7366b0c7a99e361fe218",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0109",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0109",
+        "created_at": "2026-09-14T17:50:10.505Z"
+      }
+    },
+    {
+      "trace_id": "b1e1ad20899f6b533146ee50eea9ba5f",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0108",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0108",
+        "created_at": "2026-09-14T17:50:00.443Z"
+      }
+    },
+    {
+      "trace_id": "e23450957555b11958dc77814067526c",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0107",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0107",
+        "created_at": "2026-09-14T17:49:55.402Z"
+      }
+    },
+    {
+      "trace_id": "910cb5ab923a0779951f470c31154c05",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0103",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0103",
+        "created_at": "2026-09-14T17:49:25.194Z"
+      }
+    },
+    {
+      "trace_id": "1532ea876b62abb14e6258aeccc03c30",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0102",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0102",
+        "created_at": "2026-09-14T17:49:20.141Z"
+      }
+    },
+    {
+      "trace_id": "5b79129b8bebb615858432d62b9b960b",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0101",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0101",
+        "created_at": "2026-09-14T17:49:15.100Z"
+      }
+    },
+    {
+      "trace_id": "3203ab2c365a1d4b80adb913a4bf96f4",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0100",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0100",
+        "created_at": "2026-09-14T17:49:10.059Z"
+      }
+    },
+    {
+      "trace_id": "070ed9999a66bf08e3cb803b66b8738e",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0099",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0099",
+        "created_at": "2026-09-14T17:49:05.017Z"
+      }
+    },
+    {
+      "trace_id": "0cd02e1505b7f6279a84dedb5b290e69",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0098",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0098",
+        "created_at": "2026-09-14T17:48:59.990Z"
+      }
+    },
+    {
+      "trace_id": "215a1bf8577e32033774e6bc05d200fb",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0097",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0097",
+        "created_at": "2026-09-14T17:48:54.968Z"
+      }
+    },
+    {
+      "trace_id": "5ad49b939d0fe33630e8fbdcdb82691b",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0096",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0096",
+        "created_at": "2026-09-14T17:48:44.893Z"
+      }
+    },
+    {
+      "trace_id": "1f199fa3fe269676fe0f7223c5c8fc1b",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0095",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0095",
+        "created_at": "2026-09-14T17:48:39.858Z"
+      }
+    },
+    {
+      "trace_id": "6fbea818947d80ffa2c75ed030d1313e",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0094",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0094",
+        "created_at": "2026-09-14T17:48:34.801Z"
+      }
+    },
+    {
+      "trace_id": "4f19ede8129b62ca673788e2e3a5db5a",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0093",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0093",
+        "created_at": "2026-09-14T17:48:29.773Z"
+      }
+    },
+    {
+      "trace_id": "e66533b8f919acbac960896f2fc0e9d3",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0092",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0092",
+        "created_at": "2026-09-14T17:48:19.716Z"
+      }
+    },
+    {
+      "trace_id": "cc5b222af0ed73f01b8e0ff5d123c96d",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0090",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0090",
+        "created_at": "2026-09-14T17:48:04.609Z"
+      }
+    },
+    {
+      "trace_id": "ae003e07d5758fc52fdcf28447078506",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0089",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0089",
+        "created_at": "2026-09-14T17:47:59.573Z"
+      }
+    },
+    {
+      "trace_id": "0524124e2eb5a1b24429ce2faff649e4",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0088",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0088",
+        "created_at": "2026-09-14T17:47:49.523Z"
+      }
+    },
+    {
+      "trace_id": "6f4ad5e15da3c91373a5b87f1cd4bc46",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0087",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0087",
+        "created_at": "2026-09-14T17:47:39.495Z"
+      }
+    },
+    {
+      "trace_id": "cc35b7e2f473056f8e9056f845164b2f",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0086",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0086",
+        "created_at": "2026-09-14T17:47:29.410Z"
+      }
+    },
+    {
+      "trace_id": "8d7975a7a53b39b75fadbff974e027a1",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0085",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0085",
+        "created_at": "2026-09-14T17:47:19.373Z"
+      }
+    },
+    {
+      "trace_id": "a6647160ff562e363a335ccc5046146f",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0084",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0084",
+        "created_at": "2026-09-14T17:47:14.341Z"
+      }
+    },
+    {
+      "trace_id": "e603248465ed2ef6ddcf4af753bc5949",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0083",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0083",
+        "created_at": "2026-09-14T17:47:09.319Z"
+      }
+    },
+    {
+      "trace_id": "3c55420294fa32957f720b5660b248db",
+      "x": 1.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0082",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0082",
+        "created_at": "2026-09-14T17:47:04.336Z"
+      }
+    },
+    {
+      "trace_id": "0516990783ac9f73fa604904f31f4bfd",
+      "x": 1.6,
+      "y": 2.48,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0081",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0081",
+        "created_at": "2026-09-14T17:46:54.269Z"
+      }
+    },
+    {
+      "trace_id": "032f27749eb05c7da5ba39024dbeb5ed",
+      "x": 1.6,
+      "y": 2.0,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0080",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0080",
+        "created_at": "2026-09-14T17:46:49.224Z"
+      }
+    },
+    {
+      "trace_id": "8d4163f5343b11dae067ccb67aa575a8",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0079",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0079",
+        "created_at": "2026-09-14T17:46:44.178Z"
+      }
+    },
+    {
+      "trace_id": "71e04b6817a2873f0dc40de5bbe0953a",
+      "x": 1.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0078",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0078",
+        "created_at": "2026-09-14T17:46:39.139Z"
+      }
+    },
+    {
+      "trace_id": "56520816f92850caf140135d0e2d7003",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0071",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0071",
+        "created_at": "2026-09-14T17:45:48.748Z"
+      }
+    },
+    {
+      "trace_id": "4264dadf2d93d681d67b004bb63b7763",
+      "x": 2.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0066",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0066",
+        "created_at": "2026-09-14T17:45:03.446Z"
+      }
+    },
+    {
+      "trace_id": "72538657dfcdb2af22f09562272a82de",
+      "x": 2.6,
+      "y": 2.16,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0064",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0064",
+        "created_at": "2026-09-14T17:44:28.239Z"
+      }
+    },
+    {
+      "trace_id": "708a30ad2d707c84c72c61b0787a412d",
+      "x": 4.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0063",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0063",
+        "created_at": "2026-09-14T17:44:08.143Z"
+      }
+    },
+    {
+      "trace_id": "8f953b0ddb05996de8436979a427a04b",
+      "x": 0.6,
+      "y": 2.24,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0061",
+        "role": "merchant",
+        "intent": "order_status",
+        "session_key": "support-0061",
+        "created_at": "2026-09-14T17:43:58.055Z"
+      }
+    },
+    {
+      "trace_id": "2352802a2db63828c445a3a62187bcf9",
+      "x": 1.6,
+      "y": 2.4,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0060",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0060",
+        "created_at": "2026-09-14T17:43:42.954Z"
+      }
+    },
+    {
+      "trace_id": "42b143bbcfb44d20b95d3df49da0bb13",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0058",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0058",
+        "created_at": "2026-09-14T17:43:32.918Z"
+      }
+    },
+    {
+      "trace_id": "fce76159b2ad3fc8eab3c7177fa5f183",
+      "x": 0.0,
+      "y": 2.48,
+      "cluster": 0,
+      "meta": {
+        "scenario_id": "support-0052",
+        "role": "shopper",
+        "intent": "account_change",
+        "session_key": "support-0052",
+        "created_at": "2026-09-14T17:42:47.695Z"
+      }
+    },
+    {
+      "trace_id": "6ce9416afc7a9ed2fc4e682f34cd79cf",
+      "x": 0.0,
+      "y": 2.16,
+      "cluster": 0,
+      "meta": {
+        "scenario_id": "support-0051",
+        "role": "shopper",
+        "intent": "account_change",
+        "session_key": "support-0051",
+        "created_at": "2026-09-14T17:42:42.648Z"
+      }
+    },
+    {
+      "trace_id": "3e935f5f3c5e3bdbba741708dc4a0b5b",
+      "x": 4.3,
+      "y": 2.16,
+      "cluster": 2,
+      "meta": {
+        "scenario_id": "support-0046",
+        "role": "shopper",
+        "intent": "dispute",
+        "session_key": "support-0046",
+        "created_at": "2026-09-14T17:41:52.343Z"
+      }
+    },
+    {
+      "trace_id": "d7d71cc26a9e3faddefcf212009638eb",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0043",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0043",
+        "created_at": "2026-09-14T17:41:12.125Z"
+      }
+    },
+    {
+      "trace_id": "4f8ae615ee44eebd63d9aa16b6301860",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0042",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0042",
+        "created_at": "2026-09-14T17:41:02.094Z"
+      }
+    },
+    {
+      "trace_id": "572af49ca81db8f2a7e2ab4958fcb5b5",
+      "x": 3.2,
+      "y": 2.32,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0041",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0041",
+        "created_at": "2026-09-14T17:40:52.056Z"
+      }
+    },
+    {
+      "trace_id": "4f8dfbd7f03718ec1e314108bdae45e1",
+      "x": 3.2,
+      "y": 2.08,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0040",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0040",
+        "created_at": "2026-09-14T17:40:41.987Z"
+      }
+    },
+    {
+      "trace_id": "a82b6ded9aadb86c24e386301f2582c0",
+      "x": 3.2,
+      "y": 2.24,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0039",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0039",
+        "created_at": "2026-09-14T17:40:31.941Z"
+      }
+    },
+    {
+      "trace_id": "0357421c6d0af36e667604d4606557db",
+      "x": 3.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0035",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0035",
+        "created_at": "2026-09-14T17:39:51.729Z"
+      }
+    },
+    {
+      "trace_id": "886e530c76eed795a80b67733b99ef46",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0034",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0034",
+        "created_at": "2026-09-14T17:39:46.688Z"
+      }
+    },
+    {
+      "trace_id": "13cf9eca05994385f6e480ae79d8df79",
+      "x": 3.2,
+      "y": 2.16,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0033",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0033",
+        "created_at": "2026-09-14T17:39:36.610Z"
+      }
+    },
+    {
+      "trace_id": "9f10a22d7dc9b3c2cc8a313a11a26625",
+      "x": 3.2,
+      "y": 2.48,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0031",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0031",
+        "created_at": "2026-09-14T17:39:16.521Z"
+      }
+    },
+    {
+      "trace_id": "f40f41e85b25d170531ab33b468eab50",
+      "x": 1.6,
+      "y": 2.32,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0030",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0030",
+        "created_at": "2026-09-14T17:38:51.435Z"
+      }
+    },
+    {
+      "trace_id": "8c48274b7ed10480947d6b8911b7e42b",
+      "x": 1.6,
+      "y": 2.08,
+      "cluster": 4,
+      "meta": {
+        "scenario_id": "support-0027",
+        "role": "shopper",
+        "intent": "order_status",
+        "session_key": "support-0027",
+        "created_at": "2026-09-14T17:38:31.316Z"
+      }
+    },
+    {
+      "trace_id": "35f2467993a5756c4f41337ed2d46986",
+      "x": 4.2,
+      "y": 2.4,
+      "cluster": 8,
+      "meta": {
+        "scenario_id": "support-0025",
+        "role": "shopper",
+        "intent": "refund",
+        "session_key": "support-0025",
+        "created_at": "2026-09-14T17:37:56.180Z"
+      }
+    },
+    {
+      "trace_id": "7dbe5e3b5280e2f711d28be8d492dd95",
+      "x": 2.05,
+      "y": 2.4,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0015",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0015",
+        "created_at": "2026-09-14T17:36:00.586Z"
+      }
+    },
+    {
+      "trace_id": "926c37796fac4803b0846359cd3201fc",
+      "x": 2.05,
+      "y": 2.24,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0013",
+        "role": "support",
+        "intent": "product_search",
+        "session_key": "support-0013",
+        "created_at": "2026-09-14T17:35:40.470Z"
+      }
+    },
+    {
+      "trace_id": "3b521df10aa775444443eb9ee4692585",
+      "x": 2.05,
+      "y": 2.24,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0011",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0011",
+        "created_at": "2026-09-14T17:35:20.370Z"
+      }
+    },
+    {
+      "trace_id": "94027acd4683ef894110179343994dec",
+      "x": 2.05,
+      "y": 2.48,
+      "cluster": 7,
+      "meta": {
+        "scenario_id": "support-0005",
+        "role": "shopper",
+        "intent": "product_search",
+        "session_key": "support-0005",
+        "created_at": "2026-09-14T17:34:25.029Z"
+      }
+    }
+  ],
+  "clusters": [
+    {
+      "id": 0,
+      "label": "account_change"
+    },
+    {
+      "id": 1,
+      "label": "cancellation"
+    },
+    {
+      "id": 2,
+      "label": "dispute"
+    },
+    {
+      "id": 3,
+      "label": "find_order"
+    },
+    {
+      "id": 4,
+      "label": "order_status"
+    },
+    {
+      "id": 5,
+      "label": "out_of_scope"
+    },
+    {
+      "id": 6,
+      "label": "policy_question"
+    },
+    {
+      "id": 7,
+      "label": "product_search"
+    },
+    {
+      "id": 8,
+      "label": "refund"
+    },
+    {
+      "id": 9,
+      "label": "support_feedback"
+    }
+  ]
+}
