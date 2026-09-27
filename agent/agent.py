@@ -116,6 +116,8 @@ DEFAULT_MODEL = "gpt-5.5"
 # Course model name -> LiteLLM model string (for the non-OpenAI models).
 LITELLM_COURSE_MODELS = {
     "claude-opus-4-6": "anthropic/claude-opus-4-6",
+    "claude-sonnet-4-6": "anthropic/claude-sonnet-4-6",
+    "claude-haiku-4-5": "anthropic/claude-haiku-4-5",
     "glm-5.2": "together_ai/zai-org/GLM-5.2",
 }
 

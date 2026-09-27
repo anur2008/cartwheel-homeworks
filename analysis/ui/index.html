@@ -20,15 +20,16 @@
   grouped with its result. No CDN dependencies: the whole thing is inline so it
   works offline and can be committed as one artifact.
 
-  This reference UI targets the Cartwheel trace shape. For a store with a
-  different shape, adapt renderTrace() to the new roles and content types and
-  leave the server API unchanged.
+  This UI started as the course reference and was adapted for the HW4
+  student store: scenario_id / role / intent in the header, chips on
+  refund_eligible and empty titles, a Labels view, and --student file
+  mapping. See analysis/report/interface_comparison.md.
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cartwheel error analysis</title>
+<title>Cartwheel error analysis · HW4</title>
 <style>
   :root {
     /* role hues (Gestalt similarity: one hue per role, full saturation) */
@@ -81,6 +82,11 @@
     width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font: inherit;
   }
   .nav .pos { color: var(--muted); font-size: 13px; min-width: 74px; text-align: center; }
+  #scenario-jump {
+    font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace;
+    max-width: 200px; padding: 4px 6px; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--bg); color: var(--ink);
+  }
 
   /* ---- toast banner for new samples/suggestions ---- */
   #toast {
@@ -103,10 +109,60 @@
   }
   .trace-header .tid { font-weight: 700; }
   .trace-header .meta { color: var(--muted); font-size: 13px; }
-  .trace-header .flag {
-    font-size: 11px; background: #fef3c7; color: #92400e;
-    padding: 2px 7px; border-radius: 10px;
+  .trace-header .chip {
+    font-size: 11px; padding: 2px 7px; border-radius: 10px;
+    background: #eef2ff; color: #3730a3;
   }
+  .trace-header .chip.warn { background: #fee2e2; color: #991b1b; }
+  .trace-header .chip.ok { background: #d1fae5; color: #065f46; }
+  .result-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 6px; }
+  .result-chips span {
+    font-size: 11px; font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    background: #f3f4f6; padding: 2px 7px; border-radius: 6px;
+  }
+  .result-chips .neg { background: #fee2e2; color: #991b1b; }
+  .result-chips .empty { background: #fef3c7; color: #92400e; }
+  .filter-bar { display: flex; gap: 6px; margin: 0 auto 12px; max-width: 980px; }
+  .filter-bar button {
+    border: 1px solid var(--line); background: var(--bg); font: inherit;
+    font-size: 12px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  }
+  .filter-bar button.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #labels-view { padding: 20px 18px 80px; margin: 0; overflow-x: auto; }
+  #labels-view table {
+    border-collapse: separate; border-spacing: 0;
+    font-size: 12.5px; background: var(--panel);
+  }
+  #labels-view th, #labels-view td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; }
+  #labels-view th { position: sticky; top: 52px; background: #f9fafb; font-size: 11px; z-index: 2; }
+  #labels-view th:first-child, #labels-view td.sid {
+    position: sticky; left: 0; z-index: 3; background: var(--panel);
+    width: 132px; min-width: 132px; max-width: 132px;
+    box-shadow: 4px 0 8px rgba(0,0,0,.04);
+  }
+  #labels-view th:first-child { top: 52px; z-index: 4; background: #f9fafb; }
+  #labels-view th:not(:first-child), #labels-view td:not(.sid) { min-width: 108px; }
+  #labels-view .sid {
+    cursor: pointer; color: var(--role-user); font-weight: 700;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  #labels-view .sid-note {
+    color: var(--muted); font-size: 11px; margin-top: 2px; font-weight: 400;
+    font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  #labels-view select { font: inherit; font-size: 12px; width: 100%; min-width: 92px; }
+  #trace-labels {
+    max-width: 980px; margin: 0 auto 14px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px;
+  }
+  #trace-labels .tl-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  #trace-labels .tl-note { font-size: 13px; margin: 0 0 8px; }
+  #trace-labels .tl-grid { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  #trace-labels .tl-row { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  #trace-labels .tl-name { font-family: ui-monospace, monospace; font-size: 11px; }
   .trace-body-wrap {
     display: flex; gap: 24px; max-width: 980px; margin: 0 auto;
     align-items: flex-start; position: relative;
@@ -250,9 +306,11 @@
     <button data-view="trace" class="active">Trace</button>
     <button data-view="map">Map</button>
     <button data-view="progress">Progress</button>
+    <button data-view="labels">Labels</button>
   </div>
   <div class="spacer"></div>
   <div class="nav" id="trace-nav">
+    <select id="scenario-jump" title="Jump to a scenario by id"></select>
     <button id="prev">&larr;</button>
     <span class="pos" id="pos">0 / 0</span>
     <button id="next">&rarr;</button>
@@ -262,6 +320,8 @@
 
 <div id="trace-view" class="view active">
   <div class="trace-header" id="trace-header"></div>
+  <div class="filter-bar" id="filter-bar"></div>
+  <div id="trace-labels"></div>
   <div class="trace-body-wrap">
     <div class="trace-body" id="trace-body"></div>
     <div class="margin-col" id="margin-col"></div>
@@ -286,6 +346,12 @@
   <div id="sugg-queue"></div>
 </div>
 
+<div id="labels-view" class="view">
+  <div class="section-title">Present / absent on open-coded traces</div>
+  <p class="empty" style="padding:0 0 12px">Scenario ids are the frozen first column, sorted as support-0001 … Click an id to open that trace, then mark present or absent while you read. The first-failure note is only a reminder for one mode.</p>
+  <div id="labels-table"></div>
+</div>
+
 <div id="popover"><input id="note-input" placeholder="what went wrong? (Enter to save)" /><div class="hint">first failure only, in your own words</div></div>
 <div id="toast"></div>
 
@@ -299,7 +365,9 @@ const state = {
   suggestions: [],   // [{id, trace_id, mode, quote, start, end}]
   patterns: {},      // {mode: {definition, status, count, example_trace_ids, example_quotes}}
   graph: {nodes: [], clusters: []},
-  cur: 0,            // index into samples
+  labels: {rows: []},
+  cur: 0,            // index into visibleSamples()
+  filter: 'annotated',     // all | annotated | suggestions
 };
 
 const api = {
@@ -318,17 +386,32 @@ function asAnnotationList(a) {
   if (a && Array.isArray(a.annotations)) return a.annotations;
   return [];
 }
+function asSuggestionList(a) {
+  if (Array.isArray(a)) return a;
+  if (a && Array.isArray(a.suggestions)) return a.suggestions;
+  return [];
+}
+function ensureIds(items, prefix) {
+  return (items || []).map((it, i) => {
+    if (it && it.id) return it;
+    return {...it, id: prefix + i + '-' + (it.trace_id || i).toString().slice(0, 8)};
+  });
+}
 
 async function loadAll() {
-  const [samples, annotations, suggestions, patterns, graph] = await Promise.all([
+  const [samples, annotations, suggestions, patterns, graph, labels] = await Promise.all([
     api.get('/api/samples'), api.get('/api/annotations'),
     api.get('/api/suggestions'), api.get('/api/patterns'), api.get('/api/graph'),
+    api.get('/api/labels').catch(() => ({rows: []})),
   ]);
   state.samples = Array.isArray(samples) ? samples : [];
-  state.annotations = asAnnotationList(annotations);
-  state.suggestions = Array.isArray(suggestions) ? suggestions : [];
+  state.annotations = ensureIds(asAnnotationList(annotations), 'ann-');
+  state.suggestions = ensureIds(asSuggestionList(suggestions).map(s => ({
+    ...s, quote: s.quote || s.text || '',
+  })), 'sugg-');
   state.patterns = patterns && typeof patterns === 'object' ? patterns : {};
   state.graph = graph && graph.nodes ? graph : {nodes: [], clusters: []};
+  state.labels = labels && Array.isArray(labels.rows) ? labels : {rows: []};
 }
 
 /* localStorage backup of human annotations, per SKILL.md */
@@ -344,7 +427,64 @@ async function saveAnnotations() {
 /* ------------------------------------------------------------------ *
  * Rendering: the trace view                                          *
  * ------------------------------------------------------------------ */
-function curTrace() { return state.samples[state.cur]; }
+function scenarioLabel(tid) {
+  const fromSample = sampleMeta(tid).scenario_id;
+  if (fromSample) return fromSample;
+  const a = state.annotations.find(x => x.trace_id === tid);
+  if (a && a.scenario_id) return a.scenario_id;
+  const s = state.suggestions.find(x => x.trace_id === tid);
+  if (s && s.scenario_id) return s.scenario_id;
+  return (tid || '').slice(0, 10);
+}
+function byScenarioId(aTid, bTid) {
+  return scenarioLabel(aTid).localeCompare(scenarioLabel(bTid), undefined, {numeric: true});
+}
+function visibleSamples() {
+  const ann = new Set(state.annotations.map(a => a.trace_id));
+  const sug = new Set(state.suggestions.map(s => s.trace_id));
+  let list = state.samples;
+  if (state.filter === 'annotated') list = state.samples.filter(s => ann.has(s.trace_id));
+  else if (state.filter === 'suggestions') list = state.samples.filter(s => sug.has(s.trace_id));
+  if (state.filter !== 'all') {
+    list = list.slice().sort((a, b) => byScenarioId(a.trace_id, b.trace_id));
+  }
+  return list;
+}
+function renderScenarioJump() {
+  const el = document.getElementById('scenario-jump');
+  if (!el) return;
+  const vis = visibleSamples();
+  el.innerHTML = vis.map((s, i) =>
+    `<option value="${i}">${escape(scenarioLabel(s.trace_id))}</option>`).join('');
+  if (vis.length) el.value = String(Math.min(state.cur, vis.length - 1));
+}
+function curTrace() { return visibleSamples()[state.cur]; }
+
+function renderFilter() {
+  const el = document.getElementById('filter-bar');
+  if (!el) return;
+  const nAnn = new Set(state.annotations.map(a => a.trace_id)).size;
+  const nSug = state.suggestions.length;
+  const btns = [
+    ['all', `All ${state.samples.length}`],
+    ['annotated', `Open-coded ${nAnn}`],
+    ['suggestions', `Suggestions ${nSug}`],
+  ];
+  el.innerHTML = btns.map(([id, label]) =>
+    `<button data-filter="${id}" class="${state.filter === id ? 'active' : ''}">${label}</button>`
+  ).join('') +
+    `<button id="next-sugg">Next suggestion</button>`;
+  el.querySelectorAll('[data-filter]').forEach(b => b.onclick = () => {
+    state.filter = b.dataset.filter;
+    state.cur = 0;
+    renderFilter(); renderHeader(); renderTrace(); updatePos();
+  });
+  const ns = document.getElementById('next-sugg');
+  if (ns) ns.onclick = () => {
+    const tid = state.suggestions[0] && state.suggestions[0].trace_id;
+    if (tid) gotoTrace(tid);
+  };
+}
 
 function renderHeader() {
   const s = curTrace();
@@ -352,10 +492,11 @@ function renderHeader() {
   if (!s) { h.innerHTML = '<span class="meta">no samples yet</span>'; return; }
   const m = s.meta || {};
   const bits = [];
-  bits.push(`<span class="tid">${escape(s.trace_id)}</span>`);
-  if (m.role)  bits.push(`<span class="meta">role: ${escape(m.role)}</span>`);
+  bits.push(`<span class="tid">${escape(scenarioLabel(s.trace_id))}</span>`);
+  bits.push(`<span class="meta mono">${escape((s.trace_id || '').slice(0, 12))}</span>`);
+  if (m.role) bits.push(`<span class="chip">${escape(m.role)}</span>`);
+  if (m.intent) bits.push(`<span class="chip">${escape(m.intent)}</span>`);
   if (m.store) bits.push(`<span class="meta">store: ${escape(m.store)}</span>`);
-  if (m.prompt_version) bits.push(`<span class="meta">prompt: ${escape(m.prompt_version)}</span>`);
   (s.flags || []).forEach(f => bits.push(`<span class="flag">${escape(f)}</span>`));
   h.innerHTML = bits.join(' ');
 }
@@ -387,6 +528,25 @@ function renderTrace() {
   body.innerHTML = html.join('');
   applyHighlights();
   layoutMargin();
+  renderTraceLabels();
+}
+
+function toolResultChips(raw) {
+  let obj = null;
+  try { obj = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { return ''; }
+  if (!obj || typeof obj !== 'object') return '';
+  const chips = [];
+  const order = obj.order || obj;
+  if (order && order.refund_eligible === false) chips.push('<span class="neg">refund_eligible: false</span>');
+  if (order && order.refund_eligible === true) chips.push('<span>refund_eligible: true</span>');
+  if (obj.title === '') chips.push('<span class="empty">title empty</span>');
+  if (Array.isArray(obj.products) && obj.products.some(p => p && p.title === '')) {
+    chips.push('<span class="empty">empty catalog title</span>');
+  }
+  if (obj.eligible === false) chips.push('<span class="neg">eligible: false</span>');
+  if (obj.eligible === true) chips.push('<span>eligible: true</span>');
+  if (!chips.length) return '';
+  return `<div class="result-chips">${chips.join('')}</div>`;
 }
 
 function renderMsg(m, idx) {
@@ -402,15 +562,17 @@ function renderMsg(m, idx) {
     }
   } else if (role === 'tool_result') {
     const full = pretty(m.content !== undefined ? m.content : m.text);
+    const chips = toolResultChips(full);
     const long = full.length > 240;
+    inner = chips;
     if (long) {
-      inner = `<details class="args"><summary class="result-summary">result (${full.length} chars)</summary>` +
+      inner += `<details class="args"><summary class="result-summary">result (${full.length} chars)</summary>` +
               `<pre class="json annotatable" data-idx="${idx}">${escape(full)}</pre></details>`;
     } else {
-      inner = `<pre class="json annotatable" data-idx="${idx}">${escape(full)}</pre>`;
+      inner += `<pre class="json annotatable" data-idx="${idx}">${escape(full)}</pre>`;
     }
   } else {
-    const text = m.text !== undefined ? m.text : pretty(m.content);
+    const text = displayText(m);
     inner = `<div class="text annotatable" data-idx="${idx}">${escape(text)}</div>`;
   }
   return `<div class="msg${boiler}" data-role="${role}" data-idx="${idx}">` +
@@ -605,18 +767,20 @@ async function acceptSuggestion(id) {
   state.annotations.push({
     id: 'a' + Date.now() + Math.floor(Math.random() * 1000),
     trace_id: s.trace_id, quote: s.quote, idx: s.idx,
-    note: s.mode ? `[${s.mode}]` : '(accepted)',
+    note: s.note || (s.mode ? `[${s.mode}]` : '(accepted)'),
     source: 'accepted_suggestion', mode: s.mode, ts: new Date().toISOString(),
+    scenario_id: s.scenario_id,
   });
   state.suggestions = state.suggestions.filter(x => x.id !== id);
   await saveAnnotations();
   await api.post('/api/suggestions', state.suggestions);
-  renderTrace(); renderProgress();
+  if (s.mode) await setLabel(s.trace_id, s.mode, '1');
+  renderTrace(); renderProgress(); renderFilter();
 }
 async function dismissSuggestion(id) {
   state.suggestions = state.suggestions.filter(x => x.id !== id);
   await api.post('/api/suggestions', state.suggestions);
-  renderTrace(); renderProgress();
+  renderTrace(); renderProgress(); renderFilter();
 }
 
 /* ------------------------------------------------------------------ *
@@ -701,6 +865,96 @@ async function bulkQueue(accept) {
   for (const id of ids) { accept ? await acceptSuggestion(id) : await dismissSuggestion(id); }
 }
 
+function modeNames() {
+  return normalizePatterns(state.patterns).map(m => m.name);
+}
+function sampleMeta(tid) {
+  const s = state.samples.find(x => x.trace_id === tid);
+  return (s && s.meta) || {};
+}
+function labelValue(tid, mode) {
+  const row = (state.labels.rows || []).find(r => r.trace_id === tid);
+  if (!row || !row.modes) return '';
+  const v = row.modes[mode];
+  if (v === 1 || v === '1') return '1';
+  if (v === 0 || v === '0') return '0';
+  return '';
+}
+async function setLabel(tid, mode, value) {
+  state.labels.rows = state.labels.rows || [];
+  let row = state.labels.rows.find(r => r.trace_id === tid);
+  if (!row) {
+    row = {trace_id: tid, scenario_id: sampleMeta(tid).scenario_id, modes: {}};
+    state.labels.rows.push(row);
+  }
+  row.modes = row.modes || {};
+  if (value === '') delete row.modes[mode];
+  else row.modes[mode] = Number(value);
+  await api.post('/api/labels', state.labels);
+  if (document.getElementById('labels-view').classList.contains('active')) renderLabels();
+  else renderTraceLabels();
+}
+function firstFailureNote(tid) {
+  const a = state.annotations.find(x => x.trace_id === tid);
+  return a ? (a.note || a.quote || '') : '';
+}
+function unlabeledModeCount(tid) {
+  return modeNames().filter(m => labelValue(tid, m) === '').length;
+}
+function renderTraceLabels() {
+  const el = document.getElementById('trace-labels');
+  if (!el) return;
+  const s = curTrace();
+  const modes = modeNames();
+  if (!s || !modes.length) { el.innerHTML = ''; return; }
+  const note = firstFailureNote(s.trace_id);
+  const left = unlabeledModeCount(s.trace_id);
+  const rows = modes.map(m => {
+    const v = labelValue(s.trace_id, m);
+    return `<label class="tl-row"><span class="tl-name">${escape(m.replace(/_/g, ' '))}</span>` +
+      `<select data-tid="${escape(s.trace_id)}" data-mode="${escape(m)}">` +
+      `<option value=""${v===''?' selected':''}>?</option>` +
+      `<option value="1"${v==='1'?' selected':''}>present</option>` +
+      `<option value="0"${v==='0'?' selected':''}>absent</option></select></label>`;
+  }).join('');
+  const noteHtml = note
+    ? `<div class="tl-note">Your first-failure note: ${escape(clip(note, 240))}</div>`
+    : `<div class="tl-note">No open-coding note on this trace. Read it before marking a mode present.</div>`;
+  el.innerHTML = `<div class="tl-title">${escape(scenarioLabel(s.trace_id))} · ${left} of ${modes.length} modes still unmarked</div>` +
+    noteHtml + `<div class="tl-grid">${rows}</div>`;
+  el.querySelectorAll('select').forEach(sel => sel.onchange = () =>
+    setLabel(sel.dataset.tid, sel.dataset.mode, sel.value));
+}
+function renderLabels() {
+  const el = document.getElementById('labels-table');
+  if (!el) return;
+  const modes = modeNames();
+  const ids = [...new Set(state.annotations.map(a => a.trace_id))].sort(byScenarioId);
+  if (!modes.length || !ids.length) {
+    el.innerHTML = '<div class="empty">Open-code traces and freeze modes first.</div>';
+    return;
+  }
+  const head = '<th>scenario</th>' + modes.map(m => `<th>${escape(m.replace(/_/g, ' '))}</th>`).join('');
+  const rows = ids.map(tid => {
+    const sid = scenarioLabel(tid);
+    const note = firstFailureNote(tid);
+    const cells = modes.map(m => {
+      const v = labelValue(tid, m);
+      return `<td><select data-tid="${escape(tid)}" data-mode="${escape(m)}">` +
+        `<option value=""${v===''?' selected':''}>?</option>` +
+        `<option value="1"${v==='1'?' selected':''}>present</option>` +
+        `<option value="0"${v==='0'?' selected':''}>absent</option></select></td>`;
+    }).join('');
+    return `<tr><td class="sid" data-tid="${escape(tid)}">${escape(sid)}` +
+      (note ? `<div class="sid-note" title="${escape(note)}">${escape(clip(note, 40))}</div>` : '') +
+      `</td>${cells}</tr>`;
+  }).join('');
+  el.innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+  el.querySelectorAll('.sid').forEach(td => td.onclick = () => gotoTrace(td.dataset.tid, 'annotated'));
+  el.querySelectorAll('select').forEach(sel => sel.onchange = () =>
+    setLabel(sel.dataset.tid, sel.dataset.mode, sel.value));
+}
+
 /* ------------------------------------------------------------------ *
  * Map view (canvas scatter of the 2D projection)                     *
  * ------------------------------------------------------------------ */
@@ -758,25 +1012,38 @@ document.getElementById('map').addEventListener('click', (e) => {
 /* ------------------------------------------------------------------ *
  * Navigation + view switching                                        *
  * ------------------------------------------------------------------ */
-function gotoTrace(tid) {
-  const i = state.samples.findIndex(s => s.trace_id === tid);
+function gotoTrace(tid, preferFilter) {
+  if (preferFilter) state.filter = preferFilter;
+  let vis = visibleSamples();
+  let i = vis.findIndex(s => s.trace_id === tid);
+  if (i < 0) {
+    state.filter = 'all';
+    vis = visibleSamples();
+    i = vis.findIndex(s => s.trace_id === tid);
+  }
   if (i < 0) { toast('that trace is not in the current sample'); return; }
   state.cur = i;
   switchView('trace');
-  renderHeader(); renderTrace(); updatePos();
+  renderFilter(); renderHeader(); renderTrace(); updatePos();
 }
 function updatePos() {
+  const vis = visibleSamples();
   document.getElementById('pos').textContent =
-    state.samples.length ? `${state.cur + 1} / ${state.samples.length}` : '0 / 0';
+    vis.length ? `${state.cur + 1} / ${vis.length}` : '0 / 0';
+  renderScenarioJump();
 }
 document.getElementById('prev').onclick = () => {
   if (state.cur > 0) { state.cur--; renderHeader(); renderTrace(); updatePos(); }
 };
 document.getElementById('next').onclick = () => {
-  if (state.cur < state.samples.length - 1) { state.cur++; renderHeader(); renderTrace(); updatePos(); }
+  if (state.cur < visibleSamples().length - 1) { state.cur++; renderHeader(); renderTrace(); updatePos(); }
+};
+document.getElementById('scenario-jump').onchange = () => {
+  state.cur = Number(document.getElementById('scenario-jump').value) || 0;
+  renderHeader(); renderTrace(); updatePos();
 };
 document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === 'j' || e.key === 'ArrowDown') document.getElementById('next').click();
   if (e.key === 'k' || e.key === 'ArrowUp') document.getElementById('prev').click();
 });
@@ -789,6 +1056,7 @@ function switchView(name) {
   document.getElementById('trace-nav').style.display = name === 'trace' ? 'flex' : 'none';
   if (name === 'map') renderMap();
   if (name === 'progress') renderProgress();
+  if (name === 'labels') renderLabels();
 }
 document.querySelectorAll('.views button').forEach(b =>
   b.onclick = () => switchView(b.dataset.view));
@@ -812,13 +1080,13 @@ async function poll() {
     ]);
     const newSampleCount = Array.isArray(samples) ? samples.length : 0;
     const grewSamples = newSampleCount > state.samples.length;
-    const newSuggCount = Array.isArray(suggestions) ? suggestions.length : 0;
+    const newSuggCount = asSuggestionList(suggestions).length;
     const grewSugg = newSuggCount > state.suggestions.length;
 
     // Merge remote annotations that this client did not create (replay demo,
     // or a second reviewer). De-dup by id, falling back to a content key for
     // seeded items that arrive without one.
-    const key = a => a.id || `${a.trace_id}::${(a.note || '').slice(0, 40)}`;
+    const key = a => `${a.trace_id || ''}::${(a.note || '').slice(0, 80)}::${(a.quote || '').slice(0, 40)}`;
     const seen = new Set(state.annotations.map(key));
     const remote = asAnnotationList(annotations);
     const merged = [...state.annotations];
@@ -830,14 +1098,17 @@ async function poll() {
     lastSig = sig;
 
     state.samples = Array.isArray(samples) ? samples : state.samples;
-    state.suggestions = Array.isArray(suggestions) ? suggestions : state.suggestions;
+    state.suggestions = ensureIds(asSuggestionList(suggestions).map(s => ({
+      ...s, quote: s.quote || s.text || '',
+    })), 'sugg-');
     state.patterns = patterns && typeof patterns === 'object' ? patterns : state.patterns;
     state.annotations = merged;
 
     if (grewSamples) toast(`new traces added to your batch (${newSampleCount})`);
     if (grewSugg) toast(`new agent suggestions to review (${newSuggCount})`);
 
-    renderHeader(); renderTrace(); renderProgress(); updatePos(); updateCounts();
+    renderFilter(); renderHeader(); renderTrace(); renderProgress(); updatePos(); updateCounts();
+    if (document.getElementById('labels-view').classList.contains('active')) renderLabels();
   } catch (e) { /* server not up yet; keep trying */ }
 }
 
@@ -847,6 +1118,17 @@ async function poll() {
 function escape(s) {
   return String(s === undefined || s === null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function displayText(m) {
+  let text = m.text !== undefined ? m.text : m.content;
+  if (typeof text !== 'string') return pretty(text);
+  try {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed) && parsed[0] && Array.isArray(parsed[0].parts)) {
+      return parsed.map(p => (p.parts || []).map(x => x.content || '').join('\n')).join('\n\n');
+    }
+  } catch (e) {}
+  return text;
 }
 function pretty(v) {
   if (typeof v === 'string') return v;
@@ -868,7 +1150,7 @@ window.addEventListener('resize', () => {
  * ------------------------------------------------------------------ */
 (async function boot() {
   await loadAll();
-  renderHeader(); renderTrace(); renderProgress(); updatePos(); updateCounts();
+  renderFilter(); renderHeader(); renderTrace(); renderProgress(); updatePos(); updateCounts();
   setInterval(poll, 2000);
 })();
 </script>
