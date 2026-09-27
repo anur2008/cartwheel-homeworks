@@ -7,6 +7,24 @@ The repository contains the Cartwheel support agent and starter code for all fiv
 
 Begin with the [homework index](homework/README.md). Each assignment names the code and records required for the corresponding module.
 
+## Get started with Homework 1
+
+The course instructors put together this [HW1 walkthrough](homework/module-1/hw1-tutorial.md) for anyone who wants a hand, including PMs. Your coding agent handles setup and coding while you decide what to expect and check the results.
+
+Choose the walkthrough for step-by-step help, or ask your agent to jump into a task. You can ask for help whenever you get stuck and switch approaches at any time.
+
+Open this repo in Codex, Claude Code, or your preferred coding agent and paste:
+
+```text
+Read AGENTS.md and help me get started with Homework 1.
+```
+
+If you haven't downloaded the repo yet, paste this instead:
+
+```text
+Help me get started with Homework 1 in https://github.com/ai-evals-course/cartwheel-homeworks. Use my existing local copy if I have one, or help me clone it. Then read AGENTS.md and help me choose how to proceed.
+```
+
 ## Setup
 
 You need Python 3.12 and [uv](https://docs.astral.sh/uv/). Run the commands from the repository root.
@@ -27,6 +45,8 @@ The starter contains unfinished homework functions. Tests for unfinished functio
 uv run python -m agent.cli --role shopper --user 1
 ```
 
+CLI tracing is off by default. Building a non-OpenAI agent (including Ollama through LiteLLM) also removes the SDK's implicit OpenAI exporter for direct runs. Tracing destinations are process-wide; select Langfuse or explicitly opt into OpenAI tracing before running agents. Add `--debug` to print tool calls and results locally. To send traces to OpenAI, add `--trace-openai` and set `OPENAI_API_KEY`; OpenAI hosted tracing is unavailable for zero-data-retention organizations. For the course's Langfuse setup, use `--trace` instead. The two tracing flags cannot be combined. `OPENAI_AGENTS_DISABLE_TRACING=1` disables SDK tracing for either destination.
+
 The default development seed is the executable course world: 20 stores, 800
 products, 525 users, 10,000 orders, and 18 policy documents. The seed script
 is deterministic. Two runs produce identical data, and the
@@ -44,7 +64,8 @@ Homework 2 also requires Docker with Compose. Follow the assignment for starting
 ## Repo map
 
 ```
-CLAUDE.md                 workspace config for your coding agent
+AGENTS.md                 instructions for your coding agent
+CLAUDE.md                 symlink to AGENTS.md
 SPEC.md                   support specification: scope, access matrix, criteria table
 facts.yaml                the facts sheet; every policy number lives here
 data/

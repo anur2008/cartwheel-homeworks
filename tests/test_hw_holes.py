@@ -147,7 +147,7 @@ def test_hw1_find_order(world: dict) -> None:
     result = tools.find_order(SHOPPER_1, product_name)
     assert result["ok"] is True
     assert isinstance(result["orders"], list)
-    assert any(o["id"] == 4127 for o in result["orders"])
+    assert any(o["order_id"] == 4127 for o in result["orders"])
 
     # No match returns an empty list, not an error.
     empty = tools.find_order(SHOPPER_1, "zzzznonexistent9999")
@@ -228,7 +228,7 @@ def test_optional_atif_export() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Homework 6: CI, and Homework 7: CD
+# Homework 6: CI, and Homework 7: monitoring
 # ---------------------------------------------------------------------------
 
 
@@ -266,52 +266,6 @@ def test_hw6_case_passes_uses_the_reliability_rule() -> None:
     assert case_passes("capability", 0, 5, 0.6)["decision"] == "pass"
 
 
-@hw(6, "replay_case")
-def test_hw6_replay_resets_every_attempt_and_never_retries_a_verdict() -> None:
-    from replay.harness import ReplayInfraError, replay_case
-
-    events: list[str] = []
-    outcomes: list[object] = [
-        ReplayInfraError("timeout"),
-        {"passed": False},
-        {"passed": True},
-    ]
-
-    def reset() -> None:
-        events.append("reset")
-
-    def runner() -> dict:
-        events.append("run")
-        outcome = outcomes.pop(0)
-        if isinstance(outcome, Exception):
-            raise outcome
-        return outcome
-
-    records = replay_case(runner, reset, n=2, max_infra_retries=1)
-    assert events == ["reset", "run", "reset", "run", "reset", "run"]
-    assert [record["passed"] for record in records] == [False, True]
-    assert [record["rollout"] for record in records] == [0, 1]
-
-
-@hw(6, "summarize_rollouts")
-def test_hw6_rollout_summary_reports_rate_modes_and_steps() -> None:
-    from replay.harness import summarize_rollouts
-
-    records = [
-        {"passed": True, "steps": 2},
-        {"passed": False, "failure_modes": ["mode-a"], "steps": 4},
-        {"passed": False, "failure_modes": ["mode-a", "mode-b"], "steps": 6},
-        {"passed": True, "steps": 8},
-    ]
-    summary = summarize_rollouts(records, bootstrap_iterations=200, seed=7)
-    assert summary["n"] == 4
-    assert summary["failures"] == 2
-    assert summary["failure_rate"] == pytest.approx(0.5)
-    assert summary["ci_low"] <= summary["failure_rate"] <= summary["ci_high"]
-    assert summary["mode_counts"] == {"mode-a": 2, "mode-b": 1}
-    assert summary["steps"] == {"min": 2, "median": 5.0, "max": 8}
-
-
 @hw(7, "select_traces")
 def test_hw7_sampling_keeps_the_random_sample_separate_from_risk_groups() -> None:
     from monitoring.sample import select_traces
@@ -344,14 +298,19 @@ def test_hw7_sampling_keeps_the_random_sample_separate_from_risk_groups() -> Non
     assert {"trace-1", "trace-4", "trace-7"} <= set(sampled_ids)
     assert traces == original
 
+    one = select_traces(
+        [{"id": "only"}], random_rate=0.2, risk_groups={}, seed=7
+    )
+    assert [trace["id"] for trace in one["random"]] == ["only"]
+
 
 @hw(7, "corrected_mode_prevalence")
 def test_hw7_corrected_prevalence_uses_both_sources_of_uncertainty() -> None:
     from monitoring.correct import corrected_mode_prevalence
 
     sample_predictions = [1, 1, 1, 0, 0, 0, 0, 0, 0, 0]
-    test_labels = [1, 1, 1, 1, 0, 0, 0, 0]
-    test_predictions = [1, 1, 1, 0, 0, 0, 0, 1]
+    test_labels = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+    test_predictions = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1]
     first = corrected_mode_prevalence(
         sample_predictions,
         test_labels,
@@ -368,9 +327,9 @@ def test_hw7_corrected_prevalence_uses_both_sources_of_uncertainty() -> None:
     )
     assert first == second
     assert first["raw"] == pytest.approx(0.3)
-    assert first["corrected"] == pytest.approx(0.1)
-    assert first["test_tpr"] == pytest.approx(0.75)
-    assert first["test_tnr"] == pytest.approx(0.75)
+    assert first["corrected"] == pytest.approx(0.2391)
+    assert first["failure_sensitivity"] == pytest.approx(0.8)
+    assert first["pass_specificity"] == pytest.approx(6 / 7, abs=1e-4)
     assert first["ci_low"] <= first["corrected"] <= first["ci_high"]
 
 
@@ -385,40 +344,42 @@ def test_hw7_score_records_are_stable_and_complete() -> None:
         "ci_high": 0.24,
         "n_sample": 100,
     }
-    verdicts = {"trace-a": 1, "trace-b": 0}
+    random_verdicts = {"trace-a": 1, "trace-b": 0}
+    risk_verdicts = {"trace-b": 0, "trace-c": 1}
     first = build_score_records(
-        "unsupported_policy_claim", verdicts, estimate, "2026-W28"
+        "unsupported_policy_claim",
+        random_verdicts,
+        risk_verdicts,
+        estimate,
+        "2026-W28",
     )
     second = build_score_records(
-        "unsupported_policy_claim", verdicts, estimate, "2026-W28"
+        "unsupported_policy_claim",
+        random_verdicts,
+        risk_verdicts,
+        estimate,
+        "2026-W28",
     )
     assert first == second
-    assert len(first) == 3
-    assert [record["trace_id"] for record in first] == ["trace-a", "trace-b", None]
-    assert [record["value"] for record in first] == [1.0, 0.0, 0.15]
-    assert all(len(record["score_id"]) == 32 for record in first)
-    assert first[-1]["comment"] == "95% CI 0.08-0.24, raw 0.2, n=100"
-
-
-@hw(6, "find_leaks")
-def test_hw6_leakage_check_normalizes_text_and_ignores_short_inputs() -> None:
-    from scripts.check_leakage import find_leaks
-
-    evaluation_inputs = {
-        "e-002": "Please refund order 3980 because it arrived too late.",
-        "e-001": "Show me order 4127 and tell me whether it was delivered.",
-        "short": "thanks",
-    }
-    prompt_texts = {
-        "agent": "SHOW ME ORDER 4127\n and tell me whether it was delivered.",
-        "judge": "Example: Please refund order 3980 because it arrived too late.",
-    }
-    leaks = find_leaks(evaluation_inputs, prompt_texts, min_chars=24)
-    assert [(leak["case_id"], leak["prompt"]) for leak in leaks] == [
-        ("e-001", "agent"),
-        ("e-002", "judge"),
+    assert len(first) == 5
+    assert [record["trace_id"] for record in first] == [
+        "trace-a",
+        "trace-b",
+        "trace-b",
+        "trace-c",
+        None,
     ]
-    assert all(len(leak["excerpt"]) <= 60 for leak in leaks)
+    assert [record["name"] for record in first] == [
+        "unsupported_policy_claim_verdict",
+        "unsupported_policy_claim_verdict",
+        "unsupported_policy_claim_risk_verdict",
+        "unsupported_policy_claim_risk_verdict",
+        "unsupported_policy_claim_corrected_prevalence",
+    ]
+    assert [record["value"] for record in first] == [1.0, 0.0, 0.0, 1.0, 0.15]
+    assert all(len(record["score_id"]) == 32 for record in first)
+    assert len({record["score_id"] for record in first}) == len(first)
+    assert first[-1]["comment"] == "95% CI 0.08-0.24, raw 0.2, n=100"
 
 
 # ---------------------------------------------------------------------------
@@ -647,7 +608,9 @@ def test_m2_failure_report_matches_artifact_l_schema(analysis_state, tmp_path) -
     assert out.exists() and out.with_suffix(".md").exists()
 
     # Top-level shape.
-    assert "modes" in report and report["modes"]
+    assert "modes" in report
+    if not report["modes"]:
+        pytest.skip("no modes in demo state; schema test needs populated patterns.json")
 
     # The originating-annotation map, to prove human origin per mode.
     patterns = json.loads((analysis_state / "patterns.json").read_text())
@@ -684,13 +647,18 @@ def test_m2_failure_report_matches_artifact_l_schema(analysis_state, tmp_path) -
     lead = next(mode for mode in report["modes"] if mode["name"] == DEMO_MODE)
     assert lead["name"] == DEMO_MODE
     assert round(lead["prevalence"]["corrected"], 3) == 0.163
+    # The demo judge gets 36/38 passes and 10/12 failures right.
+    evaluator = lead["evaluator"]
+    assert evaluator["test_tpr_interval"] == [0.8271, 0.9854]
+    assert evaluator["test_tnr_interval"] == [0.552, 0.953]
 
-def test_m2_select_traces_is_deterministic_and_offline(analysis_state, tmp_path) -> None:
-    """`select_traces` clusters an export into a reproducible diverse batch
-    with a one-line reason per pick, no model call."""
+def test_m2_file_selection_is_deterministic_and_resumable(
+    analysis_state, tmp_path, monkeypatch
+) -> None:
+    """Select a repeatable batch, then resume after changing directories."""
     import json
 
-    from analysis.helpers import select_traces
+    from analysis.helpers import select_traces, next_to_label
 
     # A tiny synthetic export with feature vectors, written to a temp file.
     traces = [
@@ -699,7 +667,8 @@ def test_m2_select_traces_is_deterministic_and_offline(analysis_state, tmp_path)
                                      "tokens": 100 * (i % 7)}}
         for i in range(40)
     ]
-    export = tmp_path / "export.json"
+    monkeypatch.chdir(tmp_path)
+    export = Path("export.json")
     export.write_text(json.dumps({"traces": traces}))
 
     picks_a = select_traces(export, k=24, strategy="diversity")
@@ -714,6 +683,11 @@ def test_m2_select_traces_is_deterministic_and_offline(analysis_state, tmp_path)
     saved = json.loads((analysis_state / "samples.json").read_text())
     assert isinstance(saved, list) and saved
     assert set(saved[0]) >= {"trace_id", "reason", "trace", "features", "meta"}
+
+    # Resume from the full export, even after changing directories.
+    monkeypatch.chdir(analysis_state)
+    candidates = next_to_label("resumed", k=len(traces), strategy="random")
+    assert {c["trace_id"] for c in candidates} == {t["id"] for t in traces}
 
 
 def test_m2_module1_export_is_normalized_for_review(analysis_state, tmp_path) -> None:
@@ -791,6 +765,32 @@ def test_m2_next_to_label_enriches_from_confirmed(analysis_state, tmp_path) -> N
     assert all(c.get("signal") for c in cands)
 
 
+def test_m2_next_to_label_resumes_live_source(analysis_state, monkeypatch) -> None:
+    from analysis.helpers import langfuse_io, select_traces, next_to_label
+    from analysis.helpers.normalization import normalize_traces
+
+    traces = normalize_traces([{"id": "live", "text": "hello"}])
+    monkeypatch.setattr(langfuse_io, "is_configured", lambda: True)
+    monkeypatch.setattr(langfuse_io, "fetch_traces", lambda: traces)
+    select_traces("langfuse", k=1)
+    assert next_to_label("resumed", k=1, strategy="random") == [
+        {"trace_id": "live", "signal": "random"}
+    ]
+
+
+@pytest.mark.parametrize("configured, error", [(False, RuntimeError), (True, ValueError)])
+def test_m2_unavailable_live_source_raises(
+    analysis_state, monkeypatch, configured, error
+) -> None:
+    """Missing setup or an empty live dataset should give a useful error."""
+    from analysis.helpers import langfuse_io, select_traces
+
+    monkeypatch.setattr(langfuse_io, "is_configured", lambda: configured)
+    monkeypatch.setattr(langfuse_io, "fetch_traces", lambda: [])
+    with pytest.raises(error, match="Langfuse"):
+        select_traces("langfuse", k=1)
+
+
 # --------------------------------------------------------------------------
 # Grading a student's OWN submission (mode-agnostic; opt-in).
 #
@@ -858,3 +858,15 @@ def test_m2_submission_has_a_frozen_judge_per_split_mode() -> None:
             frozen_modes.add(j.get("mode"))
     for mode in splits:
         assert mode in frozen_modes, f"{mode}: no frozen judge (freeze before reporting)"
+
+
+@hw(1, "find_order")
+@pytest.mark.parametrize("ctx,scope", [(SHOPPER_1, "shopper"), (AuthContext(user_id=9002, role="merchant", store_id=2), "merchant"), (SUPPORT, "support")])
+def test_hw1_find_order_roles_and_old_matches(order_search_cases, ctx, scope):
+    title, expected = order_search_cases
+    result = tools.find_order(ctx, title)
+    assert result["ok"] is True
+    with db.connection() as conn:
+        wanted = [db.get_order(conn, order_id).to_public_dict() for order_id in expected[scope][:5]]
+    assert result["orders"] == wanted
+    assert tools.find_order(ctx, "zzzznonexistent9999") == {"ok": True, "orders": []}

@@ -17,6 +17,8 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from agents.tracing import set_trace_processors
+from agents.tracing.processors import default_processor
 from opentelemetry import trace
 
 if TYPE_CHECKING:
@@ -26,6 +28,28 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 log = logging.getLogger("cartwheel.instrument")
 
 _genai_instrumented = False
+_openai_tracing_enabled = False
+
+
+def configure_model_tracing(*, openai_model: bool) -> None:
+    """Remove implicit hosted export for non-OpenAI models.
+
+    SDK processors are process-wide. Preserve either explicitly selected course
+    destination; do not globally disable spans, which would also break Langfuse.
+    """
+    if not openai_model and not _genai_instrumented and not _openai_tracing_enabled:
+        set_trace_processors([])
+
+
+def setup_openai_tracing() -> bool:
+    """Explicitly select hosted tracing, including for non-OpenAI inference."""
+    global _openai_tracing_enabled
+    if not os.environ.get("OPENAI_API_KEY", "").strip():
+        raise ValueError("--trace-openai requires OPENAI_API_KEY; omit the flag for local chat")
+    set_trace_processors([default_processor()])
+    _openai_tracing_enabled = True
+    return True
+
 
 
 def instrument_genai(tracer_provider: Any) -> None:
@@ -37,9 +61,10 @@ def instrument_genai(tracer_provider: Any) -> None:
 
     os.environ.setdefault("TRACELOOP_TRACE_CONTENT", "false")
     # Export only through Langfuse, not the SDK's separate hosted tracing path.
-    OpenAIAgentsInstrumentor(replace_existing_processors=True).instrument(
-        tracer_provider=tracer_provider
-    )
+    instrumentor = OpenAIAgentsInstrumentor(replace_existing_processors=True)
+    instrumentor.instrument(tracer_provider=tracer_provider)
+    if not instrumentor.is_instrumented_by_opentelemetry:
+        raise RuntimeError("OpenAI Agents tracing instrumentation failed to install")
     _genai_instrumented = True
 
 
@@ -62,8 +87,8 @@ def load_env(path: Path | None = None) -> None:
             os.environ.setdefault(key, value)
 
 
-def setup_tracing() -> None:
-    """Instrument the Agents SDK and ship spans to self-hosted Langfuse."""
+def setup_tracing() -> bool:
+    """Install Langfuse tracing; return False when credentials are missing."""
     load_env()
     if not os.environ.get("LANGFUSE_PUBLIC_KEY"):
         log.warning(
@@ -71,12 +96,18 @@ def setup_tracing() -> None:
             "(docker compose -f observability/docker-compose.yml up -d) and "
             "copy .env.example to .env."
         )
-        return
+        return False
     from langfuse import get_client
 
     get_client()  # registers the OTel tracer provider from LANGFUSE_* env vars
     instrument_genai(trace.get_tracer_provider())
+    # Preserve processor replacement for callers such as the server, which
+    # ignore our return value. A missing secret makes Langfuse a no-op client;
+    # returning before replacement would leave hosted OpenAI export active.
+    if not os.environ.get("LANGFUSE_SECRET_KEY"):
+        return False
     log.info("tracing enabled; spans go to %s", os.environ.get("LANGFUSE_HOST"))
+    return True
 
 
 def record_tool_result(ctx: "AuthContext", result: dict[str, Any]) -> None:
@@ -84,7 +115,7 @@ def record_tool_result(ctx: "AuthContext", result: dict[str, Any]) -> None:
 
     OpenLLMetry creates the tool span and records its name, arguments, and
     result. The tool wrappers call this helper before that span ends.
-    Add the caller's user_role and string user_id, plus the integer store_id
+    Add the caller's user_role and string user_id, plus the string store_id
     for merchants, then record the permission decision with the helper below.
     When tracing is off, the active span is non-recording and this is a no-op.
     """

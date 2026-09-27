@@ -111,7 +111,27 @@ With that setting, you use the saved export even when you have Langfuse configur
 
 Use `validate-evaluator` for the split. In `analysis/run_judges.py`, write a `split_data(mode)` function using `split_labels`. Use 20% training, 40% development, and 40% test. Run it once and check the class counts before choosing prompt examples.
 
-Helper calls for your coding agent to split your labels: use `split_labels` with fractions `(0.20, 0.40, 0.40)`, seed `7`, and `min_per_class=10`.
+<details>
+<summary>Helper calls for your coding agent to split your labels</summary>
+
+Use the following helper call inside `split_data(mode)`. Replace `your_mode_id` with your selected failure mode:
+
+```python
+import json
+from pathlib import Path
+from analysis.helpers import split_labels
+
+records = json.loads(Path("analysis/state/hw5_trace_inputs.json").read_text())
+splits = split_labels(
+    "your_mode_id",
+    fractions=(0.20, 0.40, 0.40),
+    seed=7,
+    min_per_class=10,
+    eligible_trace_ids=[record["trace_id"] for record in records],
+)
+```
+
+</details>
 
 With the minimum of 30 Pass and 30 Fail labels, you would have:
 
@@ -149,15 +169,38 @@ Overall agreement is misleading when failures are rare, because a judge that alw
 
 ### Compute TPR, TNR, and confidence intervals
 
-Compute TPR and TNR from your confusion counts, and calculate a 95% Wilson confidence interval for each rate.
+Compute TPR and TNR from your confusion counts, and calculate a 95% Wilson confidence interval for each rate. For example, if you correctly detect 16 of 20 human Fail cases, TNR is 0.80 with an interval of about 0.58 to 0.92. With 20 Fail cases, you still have substantial uncertainty about the judge's detection rate.
 
 ### Run development batches
 
 Use `gpt-4o-mini` as your judge model. Set your OpenAI API key locally. Use the same model for development and the final test.
 
-In `analysis/run_judges.py`, write `run_development(mode, prompt_path)`. Register the prompt, run it on development traces, and calculate metrics with the helpers. Save the judge ID and metrics for each version.
+In `analysis/run_judges.py`, write `run_development(mode, prompt_path)`. Register the prompt, run it on development traces, and calculate metrics with the helpers below. Save the judge ID and metrics for each version.
 
-Save the metrics to `analysis/report/dev-<judge_id>.json`. Keep your judge records under `analysis/state/judges/`.
+<details>
+<summary>Helper calls for your coding agent to run your judge on development traces</summary>
+
+Use the following helper calls inside `run_development(mode, prompt_path)`. Replace the mode ID and prompt path with your own.
+
+```python
+from pathlib import Path
+from analysis.helpers import register_judge, run_judge, judge_alignment
+
+record = register_judge(
+    mode="your_mode_id",
+    prompt_text=Path("analysis/prompts/your_mode_id-v0.txt").read_text(),
+    judge_model="gpt-4o-mini",
+)
+judge_id = record["judge_id"]  # Save this id for later commands.
+run_judge(judge_id, split="dev", batch_size=10)
+development = judge_alignment(judge_id, split="dev")
+```
+
+</details>
+
+Save the metrics to `analysis/report/dev-<judge_id>.json`. Keep your judge records under `analysis/state/judges/`. You have the cached predictions and critiques there.
+
+In your HW4 review interface, display the judge verdict and critique beside your human label. Filter for disagreements and inspect every one before editing the prompt. For each disagreement, decide whether the judge is wrong (fix the prompt), your label is wrong (fix the label and recalculate), or the definition is unclear (clarify the boundary and recheck affected labels).
 
 Register each revised prompt as a new version. Make at most two revisions. Explain why you stopped revising.
 
@@ -167,19 +210,49 @@ Choose your final prompt based on development results and freeze it. Use `valida
 
 In `analysis/run_judges.py`, write `run_test(judge_id)` to freeze the prompt, evaluate test traces, and save the metrics.
 
+<details>
+<summary>Helper calls for your coding agent to freeze your judge and evaluate test traces</summary>
+
+Use the following helper calls inside `run_test(judge_id)`:
+
+```python
+from analysis.helpers import freeze_judge, run_judge, judge_alignment
+
+freeze_judge(judge_id)  # Do this once for your selected version.
+run_judge(judge_id, split="test", batch_size=10)
+test = judge_alignment(judge_id, split="test")
+```
+
+</details>
+
 Save the metrics to `analysis/report/test-<judge_id>.json`. Report the confusion counts, TPR, TNR, intervals, and class counts. Explain whether you would use the judge based on the rates and uncertainty.
+
+### Resume after an interruption
+
+If the process is interrupted, rerun `run_judge` and `judge_alignment` with the same judge ID. Don't call `register_judge`, `split_labels`, or `freeze_judge` again. Completed batches are cached, so you only pay for the missing predictions.
 
 ## Part E, commit your work and record the video
 
-Commit the files you created. Keep your Homework 4 files too.
+Commit the files you created:
+
+| Artifact | Location |
+| --- | --- |
+| HW5 labels and evidence | `analysis/state/hw5_labels/<mode>.jsonl` |
+| Split assignment and exact inputs | `analysis/state/splits.json`, `analysis/state/hw5_trace_inputs.json` |
+| Every evaluated prompt | `analysis/prompts/` |
+| Judge versions, predictions, and critiques | Your mode's files in `analysis/state/judges/` |
+| Your code for exports, judge runs, and metrics | `analysis/run_judges.py` |
+| Development and test metrics | `analysis/report/dev-<judge_id>.json`, `analysis/report/test-<judge_id>.json` |
+
+Keep your Homework 4 files too.
 
 Record your screen for up to 5 minutes in one continuous take. Walk through your failure mode, one development disagreement and how you responded, and your test TPR, TNR, and confidence intervals. Explain whether you would use the judge. Recalculate test metrics from saved predictions live on camera.
 
 ## Optional extensions
 
-**Build two more judges.** Use the same skills for two other modes.
+**Build two more judges.** Use the same skills for two other modes. Reuse your code and interface, and keep separate labels for each mode.
 
-**Estimate failure prevalence.** Sample new traces randomly from the same source, run your judge on them, and calculate the Fail rate adjusted for judge errors using your test TPR and TNR.
+**Estimate failure prevalence.** Sample new traces randomly from the same source, run your judge on them, and calculate the Fail rate. Use `validate-evaluator` to adjust the rate for judge errors using your test TPR and TNR.
 
 ## References
 
