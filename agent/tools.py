@@ -35,7 +35,6 @@ from seed.eligibility import (
 
 MAX_SEARCH_LIMIT = 25
 DEFAULT_ORDER_LIMIT = 20
-FIND_ORDER_SCAN_LIMIT = 10_000
 FIND_ORDER_RESULT_LIMIT = 5
 FIND_ORDER_MIN_SCORE = 70
 
@@ -311,44 +310,30 @@ def find_order(ctx: AuthContext, query: str) -> dict[str, Any]:
         (at most 5), each as the dict returned by agent.db. If no orders
         match, return {"ok": True, "orders": []}.
     """
-    conn = db.connect()
-    try:
-        products_by_id = {product.id: product for product in db.list_products(conn)}
-        if ctx.role == "shopper":
-            candidates = db.list_orders_for_user(
-                conn, ctx.user_id, limit=FIND_ORDER_SCAN_LIMIT
-            )
-        elif ctx.role == "merchant":
-            candidates = db.list_orders_for_store(
-                conn, ctx.store_id, limit=FIND_ORDER_SCAN_LIMIT
-            )
-        else:
-            store_ids = {product.store_id for product in products_by_id.values()}
-            candidates = []
-            for store_id in store_ids:
-                candidates.extend(
-                    db.list_orders_for_store(
-                        conn, store_id, limit=FIND_ORDER_SCAN_LIMIT
-                    )
-                )
-        scored: list[tuple[float, db.Order]] = []
-        needle = query.strip()
-        for order in candidates:
-            product = products_by_id.get(order.product_id)
-            if product is None:
-                continue
-            score = fuzz.partial_ratio(needle.lower(), product.title.lower())
-            if score >= FIND_ORDER_MIN_SCORE:
-                scored.append((score, order))
-        scored.sort(key=lambda pair: (-pair[0], -pair[1].id))
-        orders = []
-        for _, order in scored[:FIND_ORDER_RESULT_LIMIT]:
-            payload = order.to_public_dict()
-            payload["id"] = order.id
-            orders.append(payload)
-        return {"ok": True, "orders": orders}
-    finally:
-        conn.close()
+    if ctx.role == "shopper" and ctx.user_id is not None:
+        scope: dict[str, Any] = {"user_id": ctx.user_id}
+    elif ctx.role == "merchant" and ctx.store_id is not None:
+        scope = {"store_id": ctx.store_id}
+    elif ctx.role == "support":
+        scope = {"all_orders": True}
+    else:
+        return permission_denied(
+            f"role '{ctx.role}' cannot search orders without its required identity"
+        )
+
+    needle = query.strip().lower()
+    with db.connection() as conn:
+        titles = {product.id: product.title.lower() for product in db.list_products(conn)}
+        candidates = db.list_order_search_candidates(conn, **scope)
+    matches = [
+        order
+        for order in candidates
+        if fuzz.partial_ratio(needle, titles.get(order.product_id, "")) >= FIND_ORDER_MIN_SCORE
+    ]
+    return {
+        "ok": True,
+        "orders": [order.to_public_dict() for order in matches[:FIND_ORDER_RESULT_LIMIT]],
+    }
 
 
 def check_refund_eligibility(ctx: AuthContext, order_id: int) -> dict[str, Any]:
