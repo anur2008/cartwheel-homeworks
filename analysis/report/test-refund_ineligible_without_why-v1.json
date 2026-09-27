@@ -1,0 +1,31 @@
+{
+  "judge_id": "refund_ineligible_without_why-v1",
+  "split": "test",
+  "tpr": 0.7917,
+  "tnr": 1.0,
+  "tpr_interval": [
+    0.5953,
+    0.9076
+  ],
+  "tnr_interval": [
+    0.7961,
+    1.0
+  ],
+  "agreement": 0.8718,
+  "tp": 19,
+  "fn": 5,
+  "tn": 15,
+  "fp": 0,
+  "n": 39,
+  "disagreements": [
+    "035181a617816126ec905e6b77b160ac",
+    "1532ea876b62abb14e6258aeccc03c30",
+    "197b49dca91c9b8770663143c38bb3e2",
+    "9a5c95b320a0834c211058b729ce6890",
+    "b1a957c973237bc009f66c23c7d974a2"
+  ],
+  "model": "gpt-4o-mini",
+  "n_pass": 24,
+  "n_fail": 15,
+  "frozen": true
+}

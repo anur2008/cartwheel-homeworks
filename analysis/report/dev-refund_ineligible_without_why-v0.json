@@ -1,0 +1,32 @@
+{
+  "judge_id": "refund_ineligible_without_why-v0",
+  "prompt_hash": "ee1fe3662b9e",
+  "version": 0,
+  "split": "dev",
+  "tpr": 0.8333,
+  "tnr": 1.0,
+  "tpr_interval": [
+    0.6415,
+    0.9332
+  ],
+  "tnr_interval": [
+    0.7961,
+    1.0
+  ],
+  "agreement": 0.8974,
+  "tp": 20,
+  "fn": 4,
+  "tn": 15,
+  "fp": 0,
+  "n": 39,
+  "disagreements": [
+    "0c83ae3beed9b81f7007f3de53831e32",
+    "7cdee7a1cc2375136069db93157bd545",
+    "824072e2c17f07b07f7d4849ef2f16cf",
+    "adb6adf114bdbfc19a97e730515f0656"
+  ],
+  "prompt_path": "analysis/prompts/refund_ineligible_without_why-v0.txt",
+  "model": "gpt-4o-mini",
+  "n_pass": 24,
+  "n_fail": 15
+}

@@ -13,3 +13,4 @@ Assignments are released incrementally. More will appear here as the course prog
 ## Module 2
 
 - [Homework 4](module-2/hw4.md) covers human trace review and the failure taxonomy.
+- [Homework 5](module-2/hw5.md) covers building and testing one LLM judge.

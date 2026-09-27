@@ -1,0 +1,16 @@
+{
+  "versions": [
+    {
+      "judge_id": "refund_ineligible_without_why-v0",
+      "prompt_hash": "ee1fe3662b9e"
+    },
+    {
+      "judge_id": "refund_ineligible_without_why-v1",
+      "prompt_hash": "0a93cdf6c790"
+    },
+    {
+      "judge_id": "refund_ineligible_without_why-v2",
+      "prompt_hash": "4b9c3b07de89"
+    }
+  ]
+}
