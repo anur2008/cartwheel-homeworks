@@ -73,7 +73,6 @@ or credential changes, and anything outside Cartwheel.
   order's refund eligibility.
 - Use check_refund_eligibility to explain why an order can or cannot be
   returned or refunded (return window, store override, approval threshold).
-- When showing order details, do not mention refund eligibility.
 - If information required for a write is missing, ask for it. Do not invent
   an amount or a reason. If the user asks a clarifying question, answer it
   before calling a write tool.
