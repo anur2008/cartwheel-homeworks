@@ -1,0 +1,20 @@
+{
+  "pull_request": "https://github.com/anur2008/cartwheel-homeworks/pull/1",
+  "agent_model": "claude-opus-4-6",
+  "case_id": "e-011",
+  "regression_run": {
+    "url": "https://github.com/anur2008/cartwheel-homeworks/actions/runs/37091879288",
+    "commit": "0292291",
+    "change": "Temporary system prompt line: \"When showing order details, do not mention refund eligibility.\"",
+    "result": "failure",
+    "case_result": "e-011 passed 0 of 5 runs and blocked CI. Every run reached the verifier: the reply omitted refund eligibility, so the reply_contains \"eligible\" check failed. Other regression cases passed 5 of 5."
+  },
+  "revert_run": {
+    "url": "https://github.com/anur2008/cartwheel-homeworks/actions/runs/37093212176",
+    "commit": "bf4bb20",
+    "change": "Reverted the temporary prompt line.",
+    "result": "success",
+    "case_result": "e-011 passed 5 of 5 runs. All four regression cases passed 5 of 5, and no trial had an infrastructure error."
+  },
+  "explanation": "The temporary instruction made the agent drop refund eligibility from order-details replies. e-011's code check caught it. In a local two-run check before CI, the frozen judge still passed those replies, because it does not fail a missing flag on a refund-eligible order, so the code check is what makes this regression visible. After the revert, the agent again reported \"Refund eligible: Yes\" for order 186, so the original behavior returned and CI passed."
+}
