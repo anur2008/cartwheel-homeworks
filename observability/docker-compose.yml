@@ -136,9 +136,7 @@ services:
       retries: 10
 
   minio:
-    # minio/minio is no longer published on Docker Hub (source-only).
-    # Official Langfuse compose uses the Chainguard image instead.
-    image: cgr.dev/chainguard/minio
+    image: cgr.dev/chainguard/minio:latest
     restart: always
     entrypoint: sh
     command: -c 'mkdir -p /data/langfuse && minio server --address ":9000" --console-address ":9001" /data'
