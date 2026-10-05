@@ -1,0 +1,20 @@
+{
+  "judge_id": "refund_ineligible_without_why-v1",
+  "judge_mode": "refund_ineligible_without_why",
+  "model": "claude-opus-4-6",
+  "random_rate": 0.2,
+  "risk_groups": ["write_action"],
+  "threshold": 0.15,
+  "periods": [
+    {
+      "label": "before",
+      "from": "2026-09-14T17:33:45Z",
+      "to": "2026-09-14T17:57:56Z"
+    },
+    {
+      "label": "after",
+      "from": "2026-10-04T05:34:42Z",
+      "to": "2026-10-04T05:43:42Z"
+    }
+  ]
+}
