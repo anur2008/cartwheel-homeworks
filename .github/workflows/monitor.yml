@@ -1,0 +1,36 @@
+name: monitor
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    name: daily refund monitor
+    # Langfuse runs on the student's computer, so a GitHub-hosted runner cannot reach it.
+    runs-on: [self-hosted, cartwheel-monitor]
+    timeout-minutes: 30
+    env:
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: uv sync
+      - name: Sample, judge, and score the previous 24 hours
+        run: uv run python -m monitoring.run --last-hours 24
+      - name: Upload monitoring output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-output-${{ github.run_id }}
+          path: monitoring/output/
+          if-no-files-found: warn

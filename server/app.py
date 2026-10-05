@@ -184,10 +184,11 @@ async def post_message(
     ctx = _authorize(session_id, authorization)
     _, session = _SESSIONS[session_id]
     agent = build_agent(ctx, model=body.model)
-    version = prompt_version(render_system_prompt(ctx))
+    version = prompt_version()
     capture = os.environ.get("TRACELOOP_TRACE_CONTENT") == "true"
     with _tracer.start_as_current_span("cartwheel.session_message") as span:
         if span.is_recording():
+            span.set_attribute("cartwheel.session_id", session_id)
             span.set_attribute("cartwheel.user_role", ctx.role)
             span.set_attribute("cartwheel.user_id", str(ctx.user_id))
             span.set_attribute("cartwheel.prompt_version", version)
